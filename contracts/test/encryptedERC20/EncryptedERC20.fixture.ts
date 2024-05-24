@@ -8,7 +8,7 @@ export async function deployEncryptedERC20Fixture(): Promise<EncryptedERC20> {
 
   const contractFactory = await ethers.getContractFactory("EncryptedERC20");
   const contract = await contractFactory.connect(signers.alice).deploy("EncryptedERC20", "ENC");
-  await contract.waitForDeployment();
-
+  const tx = await contract.waitForDeployment();
+  console.log(contract);
   return contract;
 }
