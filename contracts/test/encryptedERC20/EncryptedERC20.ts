@@ -1,28 +1,26 @@
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
 
-import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
-import { deployMyERC20Fixture } from "./MyERC20.fixture";
+import { deployEncryptedERC20Fixture } from "./EncryptedERC20.fixture";
 
-describe("MyERC20", function () {
+describe("EncryptedERC20", function () {
   before(async function () {
     await initSigners();
     this.signers = await getSigners();
   });
 
   beforeEach(async function () {
-    const contract = await deployMyERC20Fixture();
+    const contract = await deployEncryptedERC20Fixture();
     this.contractAddress = await contract.getAddress();
     this.erc20 = contract;
-    this.instances = await createInstances(this.contractAddress, ethers, this.signers);
   });
 
   it("should read token name and symbol", async function () {
     const name = await this.erc20.name();
-    expect(name, "Naraggara");
+    expect(name).to.equal("EncryptedERC20");
     const symbol = await this.erc20.symbol();
-    expect(symbol, "NARA");
+    expect(symbol).to.equal("ENC");
   });
 
   it("should get own balance and total supply", async function () {
