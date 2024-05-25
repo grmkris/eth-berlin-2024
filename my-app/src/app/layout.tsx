@@ -1,14 +1,13 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavBarComp } from "@/app/NavBarComp";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider } from 'wagmi'
-import { config } from '../lib/config'
+import { Providers } from "./providers";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
-const queryClient = new QueryClient()
 
 
 export const metadata: Metadata = {
@@ -22,15 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <body className={inter.className}>
-              <NavBarComp>{children}</NavBarComp>
-            </body>
-          </QueryClientProvider>
-        </WagmiProvider>
-    </html>
+    <>
+        <html lang="en">
+          <body className={inter.className}>
+            <NavBarComp>
+                <Providers>{children}</Providers>
+            </NavBarComp>
+          </body>
+        </html>
+      </>
 
   );
 }
