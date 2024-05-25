@@ -229,7 +229,7 @@ describe('BlindAuction', function () {
     console.log(`encryptedBalanceFeeRecipient: `, encryptedDaveBalance);
     const balanceFeeRecipient = instance.dave.decrypt(this.contractERC20Address, encryptedDaveBalance);
     console.log(`balanceFeeRecipient: `, balanceFeeRecipient);
-    // expect(balanceFeeRecipient).to.equal(feeAmount);
+    expect(balanceFeeRecipient).to.equal(feeAmount);
     console.log(`Balances at end`);
     const aliceBalanceEnd = await this.erc20.connect(this.signers.alice).balanceOf(
       this.signers.alice,

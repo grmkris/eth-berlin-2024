@@ -138,7 +138,7 @@ contract BlindAuction is Reencrypt {
 
         // Calculate the fee
         euint64 bidBasispoints = TFHE.mul(highestBid, feePercentageBp);
-        uint64 basisPointsDivisor = 1000;
+        uint64 basisPointsDivisor = 10000;
         euint64 feeAmount = TFHE.div(bidBasispoints, basisPointsDivisor);
 
         // Transfer the fee to the feeRecipient
