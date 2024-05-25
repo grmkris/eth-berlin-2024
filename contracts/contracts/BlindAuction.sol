@@ -48,9 +48,9 @@ contract BlindAuction is Reencrypt {
     address public feeRecipient;
 
     // The fee percentage in basis points (e.g., 100 = 1%).
-    uint256 public feePercentageBp;
+    euint64 public feePercentageBp;
 
-    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient,uint256 _feePercentageBp) {
+    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp) {
         beneficiary = _beneficiary;
         tokenContract = _tokenContract;
         endTime = block.timestamp + biddingTime;
@@ -60,7 +60,7 @@ contract BlindAuction is Reencrypt {
         stoppable = isStoppable;
         contractOwner = msg.sender;
         feeRecipient = _feeRecipient;
-        feePercentageBp = _feePercentageBp;
+        feePercentageBp = TFHE.asEuint64(_feePercentageBp);
     }
 
     // Bid an `encryptedValue`.
@@ -131,13 +131,24 @@ contract BlindAuction is Reencrypt {
         bids[msg.sender] = TFHE.select(canClaim, TFHE.asEuint64(0), bids[msg.sender]);
     }
 
-    // Transfer token to beneficiary
+    // Transfer token to beneficiary and fees to feeRecipient
     function auctionEnd() public onlyAfterEnd {
         require(!tokenTransferred);
-
         tokenTransferred = true;
-        tokenContract.transfer(beneficiary, highestBid);
+
+        // Calculate the fee
+        euint64 bidBasispoints = TFHE.mul(highestBid, feePercentageBp);
+        uint64 basisPointsDivisor = 1000;
+        euint64 feeAmount = TFHE.div(bidBasispoints, basisPointsDivisor);
+
+        // Transfer the fee to the feeRecipient
+        tokenContract.transfer(feeRecipient, feeAmount);
+
+        // Transfer the remaining amount to the beneficiary
+        euint64 amountToBeneficiary = highestBid - feeAmount;
+        tokenContract.transfer(beneficiary, amountToBeneficiary);
     }
+
 
     // Withdraw a bid from the auction to the caller once the auction has stopped.
     function withdraw() public onlyAfterEnd {

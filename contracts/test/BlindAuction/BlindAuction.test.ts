@@ -171,15 +171,14 @@ describe('BlindAuction', function () {
     console.log(`fee: `, fee);
     expect(balanceAlice).to.equal(1000 - 100 - 100 + carolBidAmount - fee);
 
-    //TODO: dave signature fails?
-    const tokenFeeRecipient = instance.dave.getPublicKey(this.contractERC20Address)!;
+    const tokenFeeRecipient = instance.alice.getPublicKey(this.contractERC20Address)!;
     const encryptedBalanceFeeRecipient = await this.erc20.balanceOf(
       this.signers.dave,
       tokenFeeRecipient.publicKey,
       tokenFeeRecipient.signature,
     );
     console.log(`encryptedBalanceFeeRecipient: `, encryptedBalanceFeeRecipient);
-    const balanceFeeRecipient = instance.dave.decrypt(this.contractERC20Address, encryptedBalanceFeeRecipient);
+    const balanceFeeRecipient = instance.alice.decrypt(this.contractERC20Address, encryptedBalanceFeeRecipient);
     console.log(`balanceFeeRecipient: `, balanceFeeRecipient);
     expect(balanceFeeRecipient).to.equal(fee);
   });
