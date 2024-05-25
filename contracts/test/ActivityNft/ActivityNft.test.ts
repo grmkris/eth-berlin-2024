@@ -67,8 +67,8 @@ describe.only("ActivityNFTFactory", function () {
     blindAuctionAddress = args[1];
     blindAuction = BlindAuction__factory.connect(blindAuctionAddress, this.signers.alice);
 
-    expect(isAddress(args[0])).to.be.true
-    expect(isAddress(args[1])).to.be.true
+    expect(isAddress(args[0])).to.be.true //activity NFT
+    expect(isAddress(args[1])).to.be.true //auction address
 
     const instance = await createInstances(eerc20Address, ethers, this.signers);
     const tokenAlice = instance.alice.getPublicKey(eerc20Address)!;
