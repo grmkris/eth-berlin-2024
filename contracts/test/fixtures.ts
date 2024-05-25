@@ -22,11 +22,12 @@ export async function deployBlindAuctionFixture(props: {
   deployer: ContractRunner;
   feeRecipient: string;
   feePercentage: number;
+  activityNFT: string;
 }): Promise<BlindAuction> {
 
   const contractFactory = await ethers.getContractFactory("BlindAuction");
   const contract = await contractFactory.connect(props.deployer).deploy(props.beneficiary, props.erc20Contract, props.biddingTime, true,
-    props.feeRecipient, props.feePercentage
+    props.feeRecipient, props.feePercentage, props.activityNFT
   );
   await contract.waitForDeployment();
   return contract as BlindAuction;

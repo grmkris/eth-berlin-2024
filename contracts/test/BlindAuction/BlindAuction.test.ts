@@ -31,6 +31,7 @@ describe('BlindAuction', function () {
       deployer: this.signers.alice,
       feeRecipient: this.signers.dave.address,
       feePercentage: FEE_BPS,  // Fee percentage in basis points (e.g., 100 = 1%)
+      activityNFT: this.contractActivityNFTAddress,
     });
 
     const [contract] = await Promise.all([contractPromise, transaction.wait()]);
@@ -51,7 +52,7 @@ describe('BlindAuction', function () {
     this.instances = instances;
   });
 
-  it.skip('should check Carol won the bid', async function () {
+  it('should check Carol won the bid', async function () {
     const bobBidAmount = this.instances.bob.encrypt64(10);
     const carolBidAmount = this.instances.carol.encrypt64(20);
 
@@ -122,7 +123,7 @@ describe('BlindAuction', function () {
     expect(balanceAlice).to.equal(1000 - 100 - 100 + 20);
   });
 
-  it.only('should check fees are transferred', async function () {
+  it('should check fees are transferred', async function () {
     const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
     const tokenAlice = instance.alice.getPublicKey(this.contractERC20Address)!;
     console.log(`Balances at start`);
@@ -158,9 +159,6 @@ describe('BlindAuction', function () {
     );
 
     console.log(`daveBalance: `, instance.dave.decrypt(this.contractERC20Address, daveBalance));
-
-
-
 
     const bobBidAmount = 100;
     const carolBidAmount = 200;
