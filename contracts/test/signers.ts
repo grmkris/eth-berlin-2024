@@ -74,6 +74,18 @@ export const initSigners = async (quantity: number): Promise<void> => {
 };
 
 export const getSigners = async (): Promise<Signers> => {
+  console.log(`getting signers`);
+  const balance = await ethers.provider.getBalance(signers.alice.address);
+  console.log(`alice balance: ${balance}`);
+  const balance1 = await ethers.provider.getBalance(signers.bob.address);
+  console.log(`bob balance: ${balance1}`);
+  const balance2 = await ethers.provider.getBalance(signers.carol.address);
+  console.log(`carol balance: ${balance2}`);
+  const balance3 = await ethers.provider.getBalance(signers.dave.address);
+  console.log(`dave balance: ${balance3}`);
+  const balance4 = await ethers.provider.getBalance(signers.eve.address);
+  console.log(`eve balance: ${balance4}`);
+
   return signers;
 };
 
