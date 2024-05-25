@@ -9,9 +9,23 @@ import { cookieToInitialState } from 'wagmi'
 import { headers } from 'next/headers'
 import { config, projectId} from '../lib/config'
 
+import { initializeApp } from "firebase/app";
+
 
 
 const inter = Inter({ subsets: ["latin"] });
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAgWyENrwhXuxs-HGs48ge0ZK7q2KiHO54",
+  authDomain: "betybed-7aa8d.firebaseapp.com",
+  projectId: "betybed-7aa8d",
+  storageBucket: "betybed-7aa8d.appspot.com",
+  messagingSenderId: "514652504524",
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69"
+};
+
+const app = initializeApp(firebaseConfig);
 
 
 export const metadata: Metadata = {

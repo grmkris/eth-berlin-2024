@@ -3,9 +3,31 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+
+import { getDatabase, ref, set } from "firebase/database";
 
 
-const createAuction = () => {
+
+const CreateAuction = () => {
+
+  const database = getDatabase();
+
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
+  const [minBid, setMinBid] = useState(); 
+
+
+
+  function writeUserData(userId, name, email, imageUrl) {
+    const db = getDatabase();
+    set(ref(db, 'users/' + userId), {
+      username: name,
+      email: email,
+      profile_picture : imageUrl
+    });
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
       <div className="space-y-6">
