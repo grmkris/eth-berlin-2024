@@ -3,7 +3,6 @@ import { createConfig, http } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 import { cookieStorage, createStorage } from 'wagmi'
 

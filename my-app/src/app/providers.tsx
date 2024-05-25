@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { ReactNode } from 'react'
 
 import { createWeb3Modal } from '@web3modal/wagmi/react'
+//import { WalletConnectModal } from '@walletconnect/modal'
+
 
 import { State, WagmiProvider } from 'wagmi'
 
@@ -15,9 +17,15 @@ if (!projectId) throw new Error('Project ID is not defined')
 // Create modal
 createWeb3Modal({
   wagmiConfig: config,
+  themeMode: 'light',
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true // Optional - false as default
+  enableOnramp: true, // Optional - false as default
+  themeVariables: {
+    '--w3m-accent':'#E8FB6C',
+    '--w3m-color-mix': '#E8FB6C',
+    '--w3m-color-mix-strength': 80,
+  }
 })
 
 

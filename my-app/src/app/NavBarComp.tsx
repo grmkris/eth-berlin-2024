@@ -12,7 +12,7 @@ import {
   Search,
   Users,
 } from "lucide-react";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import ConnectButton from "../../hooks/ConnectButton"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -134,7 +134,7 @@ export function NavBarComp({
               />
             </div>
           </form>
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <CircleUser className="h-5 w-5" />
@@ -149,8 +149,10 @@ export function NavBarComp({
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
-          <ConnectButton />
+          </DropdownMenu> */}
+          <w3m-button />
+         {/* <ConnectButton /> */}
+
         </div>
         <div>
         </div>
