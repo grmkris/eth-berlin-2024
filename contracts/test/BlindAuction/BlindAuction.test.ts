@@ -21,7 +21,7 @@ describe('BlindAuction', function () {
     const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
 
     // Mint with Alice account
-    const transaction = await this.erc20.mint(1000);
+    const transaction = await this.erc20.mint(10000);
 
     // Deploy blind auction
     const contractPromise = deployBlindAuctionFixture({
@@ -35,11 +35,11 @@ describe('BlindAuction', function () {
 
     const [contract] = await Promise.all([contractPromise, transaction.wait()]);
 
-    // Transfer 100 tokens to Bob
-    const encryptedTransferAmount = instance.alice.encrypt64(100);
+    // Transfer 1000 tokens to Bob
+    const encryptedTransferAmount = instance.alice.encrypt64(1000);
     const tx = await this.erc20['transfer(address,bytes)'](this.signers.bob.address, encryptedTransferAmount);
 
-    // Transfer 100 tokens to Carol
+    // Transfer 1000 tokens to Carol
     const tx2 = await this.erc20['transfer(address,bytes)'](this.signers.carol.address, encryptedTransferAmount);
     await Promise.all([tx.wait(), tx2.wait()]);
 
@@ -123,6 +123,45 @@ describe('BlindAuction', function () {
   });
 
   it.only('should check fees are transferred', async function () {
+    const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
+    const tokenAlice = instance.alice.getPublicKey(this.contractERC20Address)!;
+    console.log(`Balances at start`);
+    const aliceBalance = await this.erc20.balanceOf(
+      this.signers.alice,
+      tokenAlice.publicKey,
+      tokenAlice.signature,
+    );
+    console.log(`aliceBalance: `, instance.alice.decrypt(this.contractERC20Address, aliceBalance));
+
+    const tokenBob = instance.bob.getPublicKey(this.contractERC20Address)!;
+    const bobBalance = await this.erc20.connect(this.signers.bob).balanceOf(
+      this.signers.bob,
+      tokenBob.publicKey,
+      tokenBob.signature,
+    );
+    console.log(`bobBalance: `, instance.bob.decrypt(this.contractERC20Address, bobBalance));
+
+    const tokenCarol = instance.carol.getPublicKey(this.contractERC20Address)!;
+    const carolBalance = await this.erc20.connect(this.signers.carol).balanceOf(
+      this.signers.carol,
+      tokenCarol.publicKey,
+      tokenCarol.signature,
+    );
+
+    console.log(`carolBalance: `, instance.carol.decrypt(this.contractERC20Address, carolBalance));
+
+    const tokenDave = instance.dave.getPublicKey(this.contractERC20Address)!;
+    const daveBalance = await this.erc20.connect(this.signers.dave).balanceOf(
+      this.signers.dave,
+      tokenDave.publicKey,
+      tokenDave.signature,
+    );
+
+    console.log(`daveBalance: `, instance.dave.decrypt(this.contractERC20Address, daveBalance));
+
+
+
+
     const bobBidAmount = 100;
     const carolBidAmount = 200;
 
@@ -163,8 +202,6 @@ describe('BlindAuction', function () {
 
     // Check the balances after the auction
     console.log(`Check the balances after the auction`);
-    const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
-    const tokenAlice = instance.alice.getPublicKey(this.contractERC20Address)!;
     const encryptedBalanceAlice = await this.erc20.balanceOf(
       this.signers.alice,
       tokenAlice.publicKey,
@@ -175,15 +212,48 @@ describe('BlindAuction', function () {
     console.log(`feeAmount: `, feeAmount);
     console.log(`balanceAlice: `, balanceAlice);
 
-    const tokenFeeRecipient = instance.alice.getPublicKey(this.contractERC20Address)!;
-    const encryptedDaveBalance = await this.erc20.balanceOf(
+    const encryptedCarlolBalance = await this.erc20.connect(this.signers.carol).balanceOf(
+      this.signers.carol,
+      tokenCarol.publicKey,
+      tokenCarol.signature,
+    );
+
+    const balanceCarol = instance.carol.decrypt(this.contractERC20Address, encryptedCarlolBalance);
+    console.log(`balanceCarol: `, balanceCarol);
+
+    const encryptedDaveBalance = await this.erc20.connect(this.signers.dave).balanceOf(
       this.signers.dave,
-      tokenFeeRecipient.publicKey,
-      tokenFeeRecipient.signature,
+      tokenDave.publicKey,
+      tokenDave.signature,
     );
     console.log(`encryptedBalanceFeeRecipient: `, encryptedDaveBalance);
-    const balanceFeeRecipient = instance.alice.decrypt(this.contractERC20Address, encryptedDaveBalance);
+    const balanceFeeRecipient = instance.dave.decrypt(this.contractERC20Address, encryptedDaveBalance);
     console.log(`balanceFeeRecipient: `, balanceFeeRecipient);
     expect(balanceFeeRecipient).to.equal(feeAmount);
+    console.log(`Balances at end`);
+    const aliceBalanceEnd = await this.erc20.connect(this.signers.alice).balanceOf(
+      this.signers.alice,
+      tokenAlice.publicKey,
+      tokenAlice.signature,
+    );
+    console.log(`aliceBalanceEnd: `, instance.alice.decrypt(this.contractERC20Address, aliceBalanceEnd));
+    const bobBalanceEnd = await this.erc20.connect(this.signers.bob).balanceOf(
+      this.signers.bob,
+      tokenBob.publicKey,
+      tokenBob.signature,
+    );
+    console.log(`bobBalanceEnd: `, instance.bob.decrypt(this.contractERC20Address, bobBalanceEnd));
+    const carolBalanceEnd = await this.erc20.connect(this.signers.carol).balanceOf(
+      this.signers.carol,
+      tokenCarol.publicKey,
+      tokenCarol.signature,
+    );
+    console.log(`carolBalanceEnd: `, instance.carol.decrypt(this.contractERC20Address, carolBalanceEnd));
+    const daveBalanceEnd = await this.erc20.connect(this.signers.dave).balanceOf(
+      this.signers.dave,
+      tokenDave.publicKey,
+      tokenDave.signature,
+    );
+    console.log(`daveBalanceEnd: `, instance.dave.decrypt(this.contractERC20Address, daveBalanceEnd));
   });
 });
