@@ -61,6 +61,8 @@ const CreateAuction = () => {
   const [endTime, setEndTime] = useState(''); 
   const [auctionEndTime, setAuctionEndTime] = useState('');
   const [auctionStartTime, setAuctionStartTime] = useState(''); 
+  const [auctionOwnerAddress, setAuctionOwnerAddress] = useState(''); 
+
 
   function writeUserData(auctionID: string, _title: string, _description: string, _minBid: string, _startTime: string, _endTime: string, _auctionStartTime: string, _auctionEndTime: string) {
     
