@@ -19,38 +19,38 @@ const config = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "#E8FB6C",
+        input: "#737373",
+        ring: "#E8FB6C",
+        background: "#151515",
+        foreground: "#E8FB6C",
         primary: {
-          DEFAULT: "hsl(var(--primary))", // E8FB6C + 151515 + 737373 yellow black grey
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#E8FB6C", // E8FB6C + 151515 + 737373 yellow black grey
+          foreground: "#737373",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#737373",
+          foreground: "#737373",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          foreground: "#737373",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          foreground: "#737373",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          foreground: "#737373",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          foreground: "#737373",
         },
         card: {
           DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          foreground: "#737373",
         },
       },
       borderRadius: {
