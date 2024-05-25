@@ -4,6 +4,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+/*
+Example Auction:
+{
+  "Title": "Bedroom3",
+  "Description": "Cozy Bedroom Center City",
+  "minBid": "300",
+  "startTime": "25052024",
+  "endTime": "25062024",
+  "auctionStartTime": "25042024",
+  "auctionEndTime": "25052024"
+}
+*/
+
+type iAuction = {
+  Title: string;
+  Description: string;
+  minBid: string;
+  startTime: string;
+  endTime: string;
+  auctionStartTime: string;
+  auctionEndTime: string;
+};
+
 
 const createAuction = () => {
   return (
@@ -15,52 +38,49 @@ const createAuction = () => {
             List your item for auction and let buyers bid on it.
           </p>
         </div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Auction Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form className="grid gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  placeholder="Enter a title for your auction"
-                  type="text"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Describe the item you're auctioning"
-                />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="start-time">Start Time</Label>
-                  <Input id="start-time" type="datetime-local" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="end-time">End Time</Label>
-                  <Input id="end-time" type="datetime-local" />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="min-bid">Minimum Bid</Label>
-                <Input
-                  id="min-bid"
-                  placeholder="Enter the minimum bid amount"
-                  type="number"
-                />
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-2">
-            <Button variant="outline">Cancel</Button>
-            <Button>Create Auction</Button>
-          </CardFooter>
-        </Card>
+        <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>List an Item</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="grid gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor="title">Title</Label>
+                    <Input id="title" placeholder="Enter a title" type="text" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea id="description" placeholder="Describe your item" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="starting-bid">Starting Bid</Label>
+                    <div className="flex items-center gap-2">
+                      <Input id="starting-bid" min="0" step="50" type="number" />
+                      <span className="text-gray-500 dark:text-gray-400">USD</span>
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="auction-start">Auction Start</Label>
+                    <Input id="auction-start" type="date" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="auction-end">Auction End</Label>
+                    <Input id="auction-end" type="date" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="listing-start">Listing Start</Label>
+                    <Input id="listing-start" type="date" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="listing-end">Listing End</Label>
+                    <Input id="listing-end" type="date" />
+                  </div>
+                  <Button size="lg">Create Listing</Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
       </div>
     </div>
   );
