@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Activity,
@@ -10,6 +12,7 @@ import {
   Search,
   Users,
 } from "lucide-react";
+import ConnectButton from "../../hooks/ConnectButton";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,41 +36,23 @@ export function NavBarComp({
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
-            href="#"
+            href="/"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
             <Package2 className="h-6 w-6" />
             <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
-            href="#"
+            href="/auctionOverview"
             className="text-foreground transition-colors hover:text-foreground"
           >
-            Dashboard
+            Open Auctions
           </Link>
           <Link
-            href="#"
+            href="/createAuction"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Orders
-          </Link>
-          <Link
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Products
-          </Link>
-          <Link
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Customers
-          </Link>
-          <Link
-            href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Analytics
+            Create Auction
           </Link>
         </nav>
         <Sheet>
@@ -84,38 +69,20 @@ export function NavBarComp({
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <Link
-                href="#"
+                href="/"
                 className="flex items-center gap-2 text-lg font-semibold"
               >
                 <Package2 className="h-6 w-6" />
                 <span className="sr-only">Acme Inc</span>
               </Link>
-              <Link href="#" className="hover:text-foreground">
-                Dashboard
+              <Link href="/auctionOverview" className="hover:text-foreground">
+              Open Auctions
               </Link>
               <Link
-                href="#"
+                href="/createAuction"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Orders
-              </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Products
-              </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Customers
-              </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Analytics
+                Create Auction
               </Link>
             </nav>
           </SheetContent>
@@ -131,7 +98,7 @@ export function NavBarComp({
               />
             </div>
           </form>
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <CircleUser className="h-5 w-5" />
@@ -146,8 +113,11 @@ export function NavBarComp({
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
+          <w3m-button />
+          {/* <ConnectButton /> */}
         </div>
+        <div></div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4  md:gap-8 md:p-8">
         {children}
