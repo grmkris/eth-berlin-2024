@@ -13,6 +13,8 @@ import { getDatabase, ref, set } from "firebase/database";
 
 import { start } from "repl";
 
+import CreateAuctionHook from "../../../hooks/CreateAuctionHook";
+
 /*
 Example Auction:
 {
@@ -61,7 +63,7 @@ const CreateAuction = () => {
   const [endTime, setEndTime] = useState(''); 
   const [auctionEndTime, setAuctionEndTime] = useState('');
   const [auctionStartTime, setAuctionStartTime] = useState(''); 
-  const [auctionOwnerAddress, setAuctionOwnerAddress] = useState(''); 
+  const [auctionOwnerAddress, setAuctionOwnerAddress] = useState(''); // we have to add this variable to the database
 
 
   function writeUserData(auctionID: string, _title: string, _description: string, _minBid: string, _startTime: string, _endTime: string, _auctionStartTime: string, _auctionEndTime: string) {
@@ -87,9 +89,17 @@ const CreateAuction = () => {
       auctionEndTime: "auctionEndTime1", 
     });
   }
+
+
   useEffect(() => {
+    //onClick={async () => await CreateAuctionHook(title)}
     writeUserData("Idbjkadhsdjncdkjbfbsjf", title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime);
   }, [title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime, writeUserData]); // Add dependencies as needed
+
+  const handleOnClick = async () => {
+    await CreateAuctionHook(title);
+    //await writeUserData("Idbjkadhsdjncdkjbfbsjf", title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime);
+  };
   
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
@@ -138,7 +148,7 @@ const CreateAuction = () => {
                     <Label htmlFor="listing-end">Listing End</Label>
                     <Input id="listing-end" type="date" />
                   </div>
-                  <Button size="lg">Create Listing</Button>
+                  <Button size="lg" >Create Listing</Button>
                 </form>
               </CardContent>
             </Card>
