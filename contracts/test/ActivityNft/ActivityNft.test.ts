@@ -1,5 +1,5 @@
-import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, EncryptedERC20} from "../../types";
-import { deployActivityNftFactoryFixture, deployERC20RulesFixture, deployEncryptedERC20Fixture } from "../fixtures";
+import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, BlindAuction__factory, EncryptedERC20} from "../../types";
+import { deployActivityNftFactoryFixture, deployEncryptedERC20Fixture } from "../fixtures";
 import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
 import {expect} from "chai";
@@ -53,7 +53,8 @@ describe.only("ActivityNFTFactory", function () {
       console.log("ActivityNFT created at address: ", activityNFTAddress);
     });
     // Call the createActivityNFT function
-    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000000);
+    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000000,
+      this.signers.dave.address, 100)
     await result.wait()
 
     const filter = activityNFTFactory.filters["ActivityNFTCreated(address,address)"]
@@ -64,6 +65,7 @@ describe.only("ActivityNFTFactory", function () {
     activityNFTAddress = args[0];
     activityNFT = ActivityNFT__factory.connect(activityNFTAddress, this.signers.alice);
     blindAuctionAddress = args[1];
+    blindAuction = BlindAuction__factory.connect(blindAuctionAddress, this.signers.alice);
 
     expect(isAddress(args[0])).to.be.true
     expect(isAddress(args[1])).to.be.true
@@ -112,13 +114,13 @@ describe.only("ActivityNFTFactory", function () {
 
     // Approve the blind auction to spend tokens on Bob's and Carol's behalf.
     console.log(`Approving the blind auction to spend tokens on Bob's and Carol's behalf`);
-    const txBobApprove = await eerc20
+    const txeBobApprove = await eerc20
       .connect(this.signers.bob)
-      ['approve(address,bytes)'](this.contractAddress, bobBidAmountEnc);
+      ['approve(address,bytes)'](blindAuctionAddress, bobBidAmountEnc);
     const txCarolApprove = await eerc20
       .connect(this.signers.carol)
-      ['approve(address,bytes)'](this.contractAddress, carolBidAmountEnc);
-    await Promise.all([txBobApprove.wait(), txCarolApprove.wait()]);
+      ['approve(address,bytes)'](blindAuctionAddress, carolBidAmountEnc);
+    await Promise.all([txeBobApprove.wait(), txCarolApprove.wait()]);
 
 
     // Bob and Carol place bids
@@ -152,7 +154,7 @@ describe.only("ActivityNFTFactory", function () {
     const balanceAlice = instance.alice.decrypt(eerc20Address, encryptedBalanceAlice);
     const feeAmount = (carolBidAmount * FEE_BPS) / 10000; // Calculate the fee as 1% of the bid
     console.log(`feeAmount: `, feeAmount);
-    console.log(`balanceAlice: `, balanceAlice);
+    console.log(`balanceAliceAfter: `, balanceAlice);
 
     const encryptedCarlolBalance = await eerc20.connect(this.signers.carol).balanceOf(
       this.signers.carol,
@@ -197,5 +199,11 @@ describe.only("ActivityNFTFactory", function () {
       tokenDave.signature,
     );
     console.log(`daveBalanceEnd: `, instance.dave.decrypt(eerc20Address, daveBalanceEnd));
+
+    // check if the carol has the activity right (nft token)
+    const activityRightCarol = await activityNFT.connect(this.signers.carol).ownerOf(1);
+
+    expect(activityRightCarol).to.equal(this.signers.carol.address);
+
   });
 });
