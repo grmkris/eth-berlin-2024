@@ -9,8 +9,8 @@ import { cookieToInitialState } from 'wagmi'
 import { headers } from 'next/headers'
 import { config, projectId} from '../lib/config'
 
-import { initializeApp } from "firebase/app";
 
+import { initializeApp } from "firebase/app";
 
 
 const inter = Inter({ subsets: ["latin"] });

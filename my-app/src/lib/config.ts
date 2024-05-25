@@ -2,10 +2,22 @@
 import { createConfig, http } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { type Chain } from 'viem'
 
 
 import { cookieStorage, createStorage } from 'wagmi'
 
+export const zama = {
+  id: 8009,
+  name: 'Zama Network',
+  nativeCurrency: { name: 'ZAMA', symbol: 'ZAMA', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://devnet.zama.ai'] },
+  },
+  blockExplorers: {
+    default: { name: 'ZAMA Explorer', url: 'https://main.explorer.zama.ai' },
+  },
+} as const satisfies Chain
 
 
 // Your WalletConnect Cloud project ID
@@ -26,12 +38,12 @@ declare module 'wagmi' {
 }
 
 // Create wagmiConfig
-const chains = [sepolia] as const
+const chains = [sepolia, zama] as const
 
 export const config = defaultWagmiConfig({
   metadata,
   projectId,
-  chains: [sepolia],
+  chains: [sepolia, zama],
   ssr: true, // If your dApp uses server side rendering (SSR)
   storage: createStorage({
     storage: cookieStorage
