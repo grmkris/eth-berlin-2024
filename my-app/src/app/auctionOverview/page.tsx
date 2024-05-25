@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,6 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set } from "firebase/database";
+import { useState, useEffect} from "react";
+import { onValue } from "firebase/database";
 
 const cardData = [
   {
@@ -84,7 +91,50 @@ const AuctionCard = ({
   </Card>
 );
 
-const auctionOverview = () => {
+const firebaseConfig = {
+  apiKey: "AIzaSyAgWyENrwhXuxs-HGs48ge0ZK7q2KiHO54",
+  authDomain: "betybed-7aa8d.firebaseapp.com",
+  databaseURL: "https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "betybed-7aa8d",
+  storageBucket: "betybed-7aa8d.appspot.com",
+  messagingSenderId: "514652504524",
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69"
+};
+
+const AuctionOverview = () => {
+
+  const firebaseApp = initializeApp(firebaseConfig);
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [minBid, setMinBid] = useState('');
+  const [startTime, setStartTime] = useState(''); 
+  const [endTime, setEndTime] = useState(''); 
+  const [auctionEndTime, setAuctionEndTime] = useState('');
+  const [auctionStartTime, setAuctionStartTime] = useState(''); 
+
+  const postElement = document.getElementById('someElementId'); // Ensure this ID exists in your HTML
+
+
+  const db = getDatabase(firebaseApp);
+
+  const updateStarCount = (postElement: HTMLElement, data: string): void => {
+    // Assuming postElement is a reference to a DOM element
+    // and data is the new content to be displayed
+    postElement.textContent = data;
+  }
+
+  const starCountRef = ref(db, 'listAuctions/auctionId/');
+  onValue(starCountRef, (snapshot) => {
+  const data = snapshot.val();
+  console.log(data);
+  if (postElement) {
+    updateStarCount(postElement, data)};
+});
+
+
+
+
   return (
     <>
       <div className="flex justify-between items-start mb-8">
@@ -246,4 +296,4 @@ const auctionOverview = () => {
   );
 };
 
-export default auctionOverview;
+export default AuctionOverview;

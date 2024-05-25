@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
+
 import { initializeApp } from "firebase/app";
-
-
 import { getDatabase, ref, set } from "firebase/database";
+
 import { start } from "repl";
 
 /*
@@ -61,7 +62,7 @@ const CreateAuction = () => {
   const [auctionEndTime, setAuctionEndTime] = useState('');
   const [auctionStartTime, setAuctionStartTime] = useState(''); 
 
-  function writeUserData(auctionID: string, title: string, description: string, minBid: string, startTime: string, endTime: string, auctionStartTime: string, auctionEndTime: string) {
+  function writeUserData(auctionID: string, _title: string, _description: string, _minBid: string, _startTime: string, _endTime: string, _auctionStartTime: string, _auctionEndTime: string) {
     
     const db = getDatabase(firebaseApp);
     // set(ref(db, 'listAuctions/' + auctionID), {
@@ -73,6 +74,7 @@ const CreateAuction = () => {
     //   auctionStartTime: auctionStartTime,
     //   auctionEndTime: auctionEndTime, 
     // });
+    
     set(ref(db, 'listAuctions/auctionId/' + auctionID), {
       title: "title1",
       description: "description1",
@@ -84,8 +86,8 @@ const CreateAuction = () => {
     });
   }
   useEffect(() => {
-    writeUserData("Idbjkadhbsjf", title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime);
-  }, [title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime]); // Add dependencies as needed
+    writeUserData("Idbjkadhsdjncdkjbfbsjf", title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime);
+  }, [title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime, writeUserData]); // Add dependencies as needed
   
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
