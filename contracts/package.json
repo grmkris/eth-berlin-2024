@@ -77,7 +77,7 @@
     "prettier:check": "prettier --check \"**/*.{js,json,md,sol,ts,yml}\"",
     "prettier:write": "prettier --write \"**/*.{js,json,md,sol,ts,yml}\"",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain",
-    "test": "hardhat test",
+    "test": "hardhat test --network zama",
     "test:auction": "hardhat test test/BlindAuction/BlindAuction.test.ts",
     "test:mock": "HARDHAT_NETWORK=hardhat hardhat test --network hardhat",
     "coverage:mock": "HARDHAT_NETWORK=hardhat hardhat coverage-mock --network hardhat",

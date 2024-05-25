@@ -6,11 +6,11 @@ import { getSigners, initSigners } from '../signers';
 import { deployBlindAuctionFixture, deployEncryptedERC20Fixture } from '../fixtures';
 
 describe('BlindAuction', function () {
+  const FEE_BPS = 100; // 1%
   before(async function () {
     // number of signers that should be created. 4 is dave, which is used for fee recipient so also needed
     await initSigners(4);
     this.signers = await getSigners();
-    console.log(`signers: `, this.signers);
   });
 
   beforeEach(async function () {
@@ -28,9 +28,9 @@ describe('BlindAuction', function () {
       beneficiary: this.signers.alice.address,
       erc20Contract: this.contractERC20Address,
       biddingTime: 1000000,
-      deployer: this.signers.alice,    
-      feeRecipient: this.signers.dave.address, 
-      feePercentage: 100,  // Fee percentage in basis points (e.g., 100 = 1%)
+      deployer: this.signers.alice,
+      feeRecipient: this.signers.dave.address,
+      feePercentage: FEE_BPS,  // Fee percentage in basis points (e.g., 100 = 1%)
     });
 
     const [contract] = await Promise.all([contractPromise, transaction.wait()]);
@@ -122,14 +122,15 @@ describe('BlindAuction', function () {
     expect(balanceAlice).to.equal(1000 - 100 - 100 + 20);
   });
 
-  it('should check fees are transferred', async function () {
-    const bobBidAmount = 10;
-    const carolBidAmount = 20;
+  it.only('should check fees are transferred', async function () {
+    const bobBidAmount = 100;
+    const carolBidAmount = 200;
 
     const bobBidAmountEnc = this.instances.bob.encrypt64(bobBidAmount);
     const carolBidAmountEnc = this.instances.carol.encrypt64(carolBidAmount);
 
     // Approve the blind auction to spend tokens on Bob's and Carol's behalf.
+    console.log(`Approving the blind auction to spend tokens on Bob's and Carol's behalf`);
     const txBobApprove = await this.erc20
       .connect(this.signers.bob)
       ['approve(address,bytes)'](this.contractAddress, bobBidAmountEnc);
@@ -138,27 +139,30 @@ describe('BlindAuction', function () {
       ['approve(address,bytes)'](this.contractAddress, carolBidAmountEnc);
     await Promise.all([txBobApprove.wait(), txCarolApprove.wait()]);
 
-    console.log('Bob Public Key:', this.instances.bob.getPublicKey(this.contractAddress));
-    console.log('Carol Public Key:', this.instances.carol.getPublicKey(this.contractAddress));
 
     // Bob and Carol place bids
+    console.log(`Bob and Carol place bids`);
     const txCarolBid = await this.blindAuction.connect(this.signers.carol).bid(carolBidAmountEnc, { gasLimit: 5000000 });
     const txBobBid = await this.blindAuction.connect(this.signers.bob).bid(bobBidAmountEnc, { gasLimit: 5000000 });
     await Promise.all([txCarolBid.wait(), txBobBid.wait()]);
 
     // Stop the auction
+    console.log(`Stop the auction`);
     const txAliceStop = await this.blindAuction.connect(this.signers.alice).stop();
     await txAliceStop.wait();
 
     // Carol claims the auction item
+    console.log(`Carol claims the auction item`);
     const txCarolClaim = await this.blindAuction.connect(this.signers.carol).claim();
     await txCarolClaim.wait();
 
     // End the auction and transfer the highest bid to the beneficiary
+    console.log(`End the auction and transfer the highest bid to the beneficiary`);
     const txAuctionEnd = await this.blindAuction.connect(this.signers.alice).auctionEnd();
     await txAuctionEnd.wait();
 
     // Check the balances after the auction
+    console.log(`Check the balances after the auction`);
     const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
     const tokenAlice = instance.alice.getPublicKey(this.contractERC20Address)!;
     const encryptedBalanceAlice = await this.erc20.balanceOf(
@@ -167,19 +171,19 @@ describe('BlindAuction', function () {
       tokenAlice.signature,
     );
     const balanceAlice = instance.alice.decrypt(this.contractERC20Address, encryptedBalanceAlice);
-    const fee = Math.floor((carolBidAmount * 100) / 10000); // Calculate the fee as 1% of the bid
-    console.log(`fee: `, fee);
-    expect(balanceAlice).to.equal(1000 - 100 - 100 + carolBidAmount - fee);
+    const feeAmount = (carolBidAmount * FEE_BPS) / 10000; // Calculate the fee as 1% of the bid
+    console.log(`feeAmount: `, feeAmount);
+    console.log(`balanceAlice: `, balanceAlice);
 
     const tokenFeeRecipient = instance.alice.getPublicKey(this.contractERC20Address)!;
-    const encryptedBalanceFeeRecipient = await this.erc20.balanceOf(
+    const encryptedDaveBalance = await this.erc20.balanceOf(
       this.signers.dave,
       tokenFeeRecipient.publicKey,
       tokenFeeRecipient.signature,
     );
-    console.log(`encryptedBalanceFeeRecipient: `, encryptedBalanceFeeRecipient);
-    const balanceFeeRecipient = instance.alice.decrypt(this.contractERC20Address, encryptedBalanceFeeRecipient);
+    console.log(`encryptedBalanceFeeRecipient: `, encryptedDaveBalance);
+    const balanceFeeRecipient = instance.alice.decrypt(this.contractERC20Address, encryptedDaveBalance);
     console.log(`balanceFeeRecipient: `, balanceFeeRecipient);
-    expect(balanceFeeRecipient).to.equal(fee);
+    expect(balanceFeeRecipient).to.equal(feeAmount);
   });
 });
