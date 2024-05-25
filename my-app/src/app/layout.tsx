@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavBarComp } from "@/app/NavBarComp";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+import { config } from '../lib/config'
 
 const inter = Inter({ subsets: ["latin"] });
+
+const queryClient = new QueryClient()
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <NavBarComp>{children}</NavBarComp>
-      </body>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <body className={inter.className}>
+              <NavBarComp>{children}</NavBarComp>
+            </body>
+          </QueryClientProvider>
+        </WagmiProvider>
     </html>
+
   );
 }
