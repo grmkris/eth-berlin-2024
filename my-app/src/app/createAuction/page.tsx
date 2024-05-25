@@ -31,16 +31,17 @@ type iAuction = {
 };
 
 
-
 const CreateAuction = () => {
 
   const database = getDatabase();
 
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
-  const [minBid, setMinBid] = useState(); 
-
-
+  const [minBid, setMinBid] = useState();
+  const [startTime, setStartTime] = useState(); 
+  const [endTime, setEndTime] = useState(); 
+  const [auctionEndTime, setAuctionEndTime] = useState();
+  const [auctionStartTime, setAuctionStartTime] = useState(); 
 
   function writeUserData(userId, name, email, imageUrl) {
     const db = getDatabase();
