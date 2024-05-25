@@ -29,9 +29,7 @@ contract ActivityNFTFactory {
         ActivityNFT activityNFT = new ActivityNFT(address(this), activityRight);
 
         BlindAuction blindAuction = new BlindAuction(msg.sender, encryptedERC20Address, biddingTime, 
-            false, address(this), 100, address(activityNFT));
-
-        activityNFT.transferFrom(address(this), address(blindAuction), 1);
+            true, address(this), 100, address(activityNFT), msg.sender);
 
         emit ActivityNFTCreated(address(activityNFT), address(blindAuction));
         return address(activityNFT);
