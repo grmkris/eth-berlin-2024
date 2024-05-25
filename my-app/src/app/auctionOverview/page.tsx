@@ -7,7 +7,7 @@ const auctionOverview = () => {
     <>
       <div className="flex justify-between items-start mb-8">
         <h1 className="text-2xl font-bold">Auction Offers Overview</h1>
-        <Button variant="secondary">Create Offer</Button>
+        <Button variant="outline">Create Offer</Button>
       </div>
       <div className="grid grid-cols-3 gap-4">
         <Card className="w-full">

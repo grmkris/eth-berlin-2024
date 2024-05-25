@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link";
 import {
   Activity,
@@ -10,6 +12,7 @@ import {
   Search,
   Users,
 } from "lucide-react";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -147,6 +150,9 @@ export function NavBarComp({
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <ConnectButton />
+        </div>
+        <div>
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4  md:gap-8 md:p-8">
