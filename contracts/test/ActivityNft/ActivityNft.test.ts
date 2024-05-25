@@ -1,4 +1,4 @@
-import { ActivityNFT, ActivityNFTFactory, BlindAuction, EncryptedERC20 } from "../../types";
+import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, EncryptedERC20} from "../../types";
 import { deployActivityNftFactoryFixture, deployERC20RulesFixture, deployEncryptedERC20Fixture } from "../fixtures";
 import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
@@ -15,8 +15,8 @@ describe.only("ActivityNFTFactory", function () {
     let blindAuction: BlindAuction;
     let blindAuctionAddress: string;
     let activityNFT: ActivityNFT;
-    let activityNFTAddress: string; 
-    
+    let activityNFTAddress: string;
+
     before(async function () {
         await initSigners(3);
         this.signers = await getSigners();
@@ -62,7 +62,7 @@ describe.only("ActivityNFTFactory", function () {
     expect(event.fragment.name).to.equal('ActivityNFTCreated')
     const args = event.args;
     activityNFTAddress = args[0];
-    activityNFT = activityNFTAddress as ActivityNFT;
+    activityNFT = ActivityNFT__factory.connect(activityNFTAddress, this.signers.alice);
     blindAuctionAddress = args[1];
 
     expect(isAddress(args[0])).to.be.true
