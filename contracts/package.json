@@ -77,7 +77,7 @@
     "prettier:check": "prettier --check \"**/*.{js,json,md,sol,ts,yml}\"",
     "prettier:write": "prettier --write \"**/*.{js,json,md,sol,ts,yml}\"",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain",
-    "test": "hardhat test --network zama",
+    "test": "hardhat test",
     "test:mock": "HARDHAT_NETWORK=hardhat hardhat test --network hardhat",
     "coverage:mock": "HARDHAT_NETWORK=hardhat hardhat coverage-mock --network hardhat",
     "task:getEthereumAddress": "hardhat task:getEthereumAddress",
@@ -92,5 +92,8 @@
     "fhevm:faucet:carol": "docker exec -i fhevm faucet $(npx hardhat task:getEthereumAddressCarol)",
     "fhevm:faucet:dave": "docker exec -i fhevm faucet $(npx hardhat task:getEthereumAddressDave)",
     "fhevm:faucet:eve": "docker exec -i fhevm faucet $(npx hardhat task:getEthereumAddressEve)"
+  },
+  "dependencies": {
+    "bigint-buffer": "^1.1.5"
   }
 }
