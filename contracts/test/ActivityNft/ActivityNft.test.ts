@@ -1,10 +1,10 @@
-import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ActivityNFTFactory } from "../../types";
 import { deployActivityNftFactoryFixture } from "../fixtures";
 import { getSigners, initSigners } from "../signers";
-import { ActivityNFTFactory } from "../../types";
+import {expect} from "chai";
+import {isAddress} from "ethers";
 
-describe("ActivityNFTFactory", function () {
+describe.only("ActivityNFTFactory", function () {
     let activityNFTFactory: ActivityNFTFactory;
     before(async function () {
         await initSigners(3);
@@ -17,12 +17,25 @@ describe("ActivityNFTFactory", function () {
         activityNFTFactory = contract as ActivityNFTFactory;
     });
 
-  it("should create a new ActivityNFT contract", async function () {
+  it.only("should create a new ActivityNFT contract", async function () {
     const activityRight = "Sleep in Fhain for 2 weeks";
 
+    // create event listener
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await activityNFTFactory.on("ActivityNFTCreated", (activityNFTAddress) => {
+      console.log("ActivityNFT created at address: ", activityNFTAddress);
+    });
     // Call the createActivityNFT function
     const result = await activityNFTFactory.createActivityNFT(activityRight);
-    //TODO: check for emitted events
+    await result.wait()
+
+    const filter = activityNFTFactory.filters["ActivityNFTCreated(address)"]
+    const events = await activityNFTFactory.queryFilter(filter)
+    const event = events[0]
+    expect(event.fragment.name).to.equal('ActivityNFTCreated')
+    const args = event.args
+    expect(isAddress(args[0])).to.be.true
 
   });
 });
