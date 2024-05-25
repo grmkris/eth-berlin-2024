@@ -44,7 +44,13 @@ contract BlindAuction is Reencrypt {
     // It cannot be called after `time`.
     error TooLate(uint time);
 
-    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable) {
+    // The address that will receive the protocol fees.
+    address public feeRecipient;
+
+    // The fee percentage in basis points (e.g., 100 = 1%).
+    uint256 public feePercentageBp;
+
+    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient,uint256 _feePercentageBp) {
         beneficiary = _beneficiary;
         tokenContract = _tokenContract;
         endTime = block.timestamp + biddingTime;
@@ -53,6 +59,8 @@ contract BlindAuction is Reencrypt {
         bidCounter = 0;
         stoppable = isStoppable;
         contractOwner = msg.sender;
+        feeRecipient = _feeRecipient;
+        feePercentageBp = _feePercentageBp;
     }
 
     // Bid an `encryptedValue`.
