@@ -26,7 +26,7 @@ const config = {
         foreground: "#E8FB6C",
         primary: {
           DEFAULT: "#E8FB6C", // E8FB6C + 151515 + 737373 yellow black grey
-          foreground: "#737373",
+          foreground: "#E8FB6C",
         },
         secondary: {
           DEFAULT: "#737373",
@@ -41,7 +41,7 @@ const config = {
           foreground: "#737373",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "#737373",
           foreground: "#737373",
         },
         popover: {

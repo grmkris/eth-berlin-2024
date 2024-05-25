@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Stick+No+Bills:wght@200..800&display=swap');
+
 @tailwind base;
   @tailwind components;
   @tailwind utilities;
@@ -64,6 +66,9 @@
       --input: 217.2 32.6% 17.5%;
       --ring: 212.7 26.8% 83.9%;
     }
+
+    
+    
   }
 
   @layer base {
@@ -73,4 +78,31 @@
     body {
       @apply bg-background text-foreground;
     }
+
+    .stick-no-bills-200 {
+      font-family: "Stick No Bills", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 200;
+      font-style: normal;
+    }
+    .stick-no-bills-400 {
+      font-family: "Stick No Bills", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+    .stick-no-bills-600 {
+      font-family: "Stick No Bills", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-style: normal;
+    }
+    .stick-no-bills-800 {
+      font-family: "Stick No Bills", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 800;
+      font-style: normal;
+    } 
   }
+
+  
