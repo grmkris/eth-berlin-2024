@@ -1,4 +1,4 @@
-import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, EncryptedERC20} from "../../types";
+import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, BlindAuction__factory, EncryptedERC20} from "../../types";
 import { deployActivityNftFactoryFixture, deployERC20RulesFixture, deployEncryptedERC20Fixture } from "../fixtures";
 import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
@@ -64,6 +64,7 @@ describe.only("ActivityNFTFactory", function () {
     activityNFTAddress = args[0];
     activityNFT = ActivityNFT__factory.connect(activityNFTAddress, this.signers.alice);
     blindAuctionAddress = args[1];
+    blindAuction = BlindAuction__factory.connect(blindAuctionAddress, this.signers.alice);
 
     expect(isAddress(args[0])).to.be.true
     expect(isAddress(args[1])).to.be.true
@@ -112,13 +113,13 @@ describe.only("ActivityNFTFactory", function () {
 
     // Approve the blind auction to spend tokens on Bob's and Carol's behalf.
     console.log(`Approving the blind auction to spend tokens on Bob's and Carol's behalf`);
-    const txBobApprove = await eerc20
+    const txeBobApprove = await eerc20
       .connect(this.signers.bob)
-      ['approve(address,bytes)'](this.contractAddress, bobBidAmountEnc);
+      ['approve(address,bytes)'](blindAuctionAddress, bobBidAmount);
     const txCarolApprove = await eerc20
       .connect(this.signers.carol)
-      ['approve(address,bytes)'](this.contractAddress, carolBidAmountEnc);
-    await Promise.all([txBobApprove.wait(), txCarolApprove.wait()]);
+      ['approve(address,bytes)'](blindAuctionAddress, carolBidAmount);
+    await Promise.all([txeBobApprove.wait(), txCarolApprove.wait()]);
 
 
     // Bob and Carol place bids
@@ -152,7 +153,7 @@ describe.only("ActivityNFTFactory", function () {
     const balanceAlice = instance.alice.decrypt(eerc20Address, encryptedBalanceAlice);
     const feeAmount = (carolBidAmount * FEE_BPS) / 10000; // Calculate the fee as 1% of the bid
     console.log(`feeAmount: `, feeAmount);
-    console.log(`balanceAlice: `, balanceAlice);
+    console.log(`balanceAliceAfter: `, balanceAlice);
 
     const encryptedCarlolBalance = await eerc20.connect(this.signers.carol).balanceOf(
       this.signers.carol,

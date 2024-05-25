@@ -54,7 +54,8 @@ contract BlindAuction is Reencrypt {
     // activityNFT which represents the activity right
     ActivityNFT public activityNFT;
 
-    constructor(address _beneficiary, address _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp, address _activityNFT) {
+    constructor(address _beneficiary, address _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp, address _activityNFT, 
+    address _contractOwner) {
         beneficiary = _beneficiary;
         tokenContract = EncryptedERC20(_tokenContract); 
         endTime = block.timestamp + biddingTime;
@@ -62,7 +63,7 @@ contract BlindAuction is Reencrypt {
         tokenTransferred = false;
         bidCounter = 0;
         stoppable = isStoppable;
-        contractOwner = msg.sender;
+        contractOwner = _contractOwner;
         feeRecipient = _feeRecipient;
         feePercentageBp = TFHE.asEuint64(_feePercentageBp);
         activityNFT = ActivityNFT(_activityNFT);
@@ -136,7 +137,7 @@ contract BlindAuction is Reencrypt {
         bids[msg.sender] = TFHE.select(canClaim, TFHE.asEuint64(0), bids[msg.sender]);
 
         // TODO: test if transferring the NFT works
-        activityNFT.transferFrom(address(this), msg.sender, 1);
+        // activityNFT.transferFrom(address(this), msg.sender, 1);
     }
 
     // Transfer token to beneficiary and fees to feeRecipient
