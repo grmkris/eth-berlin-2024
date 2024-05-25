@@ -40,11 +40,17 @@ describe.only("ActivityNFTFactory", function () {
 
         // Transfer 1000 tokens to Carol
         const tx2 = await eerc20['transfer(address,bytes)'](this.signers.carol.address, encryptedTransferAmount);
-        await Promise.all([tx.wait(), tx2.wait()]);
+
+        // Transfer 1000 tokens to Metamask
+        const tx3 = await eerc20['transfer(address,bytes)']("0x08Ab1Ce3686cb7E616af2D3E068356B160c4c038", encryptedTransferAmount);
+        await Promise.all([tx.wait(), tx2.wait(), tx3.wait()]);
     });
 
   it.only("should create a new ActivityNFT contract", async function () {
     const activityRight = "Sleep in Fhain for 2 weeks";
+    const activityNFTFactoryAddress = await activityNFTFactory.getAddress();
+    console.log(`activityNFTFactoryAddress: `, activityNFTFactoryAddress);
+    console.log(`eerc20Address: `, eerc20Address);
 
     // create event listener
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -53,12 +59,12 @@ describe.only("ActivityNFTFactory", function () {
       console.log("ActivityNFT created at address: ", activityNFTAddress);
     });
     // Call the createActivityNFT function
-    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000000,
+    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000,
       this.signers.dave.address, 100)
     await result.wait()
 
     const filter = activityNFTFactory.filters["ActivityNFTCreated(address,address)"]
-    const events = await activityNFTFactory.queryFilter(filter)
+    const events = await activityNFTFactory.queryFilter(filter, -10)
     const event = events[0]
     expect(event.fragment.name).to.equal('ActivityNFTCreated')
     const args = event.args;
