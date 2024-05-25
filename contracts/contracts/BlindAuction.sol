@@ -6,6 +6,7 @@ import "fhevm/lib/TFHE.sol";
 import "fhevm/abstracts/Reencrypt.sol";
 
 import "./EncryptedERC20.sol";
+import "./ActivityNft.sol";
 
 contract BlindAuction is Reencrypt {
     uint public endTime;
@@ -50,9 +51,12 @@ contract BlindAuction is Reencrypt {
     // The fee percentage in basis points (e.g., 100 = 1%).
     euint64 public feePercentageBp;
 
-    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp) {
+    // activityNFT which represents the activity right
+    ActivityNFT public activityNFT;
+
+    constructor(address _beneficiary, address _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp, address _activityNFT) {
         beneficiary = _beneficiary;
-        tokenContract = _tokenContract;
+        tokenContract = EncryptedERC20(_tokenContract); 
         endTime = block.timestamp + biddingTime;
         objectClaimed = TFHE.asEbool(false);
         tokenTransferred = false;
@@ -61,6 +65,7 @@ contract BlindAuction is Reencrypt {
         contractOwner = msg.sender;
         feeRecipient = _feeRecipient;
         feePercentageBp = TFHE.asEuint64(_feePercentageBp);
+        activityNFT = ActivityNFT(_activityNFT);
     }
 
     // Bid an `encryptedValue`.
@@ -129,6 +134,9 @@ contract BlindAuction is Reencrypt {
 
         objectClaimed = TFHE.or(canClaim, objectClaimed);
         bids[msg.sender] = TFHE.select(canClaim, TFHE.asEuint64(0), bids[msg.sender]);
+
+        // TODO: test if transferring the NFT works
+        activityNFT.transferFrom(address(this), msg.sender, 1);
     }
 
     // Transfer token to beneficiary and fees to feeRecipient
