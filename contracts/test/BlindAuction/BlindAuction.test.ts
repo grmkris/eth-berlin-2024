@@ -21,7 +21,7 @@ describe('BlindAuction', function () {
     const instance = await createInstances(this.contractERC20Address, ethers, this.signers);
 
     // Mint with Alice account
-    const transaction = await this.erc20.mint(1000);
+    const transaction = await this.erc20.mint(10000);
 
     // Deploy blind auction
     const contractPromise = deployBlindAuctionFixture({
@@ -35,11 +35,11 @@ describe('BlindAuction', function () {
 
     const [contract] = await Promise.all([contractPromise, transaction.wait()]);
 
-    // Transfer 100 tokens to Bob
-    const encryptedTransferAmount = instance.alice.encrypt64(100);
+    // Transfer 1000 tokens to Bob
+    const encryptedTransferAmount = instance.alice.encrypt64(1000);
     const tx = await this.erc20['transfer(address,bytes)'](this.signers.bob.address, encryptedTransferAmount);
 
-    // Transfer 100 tokens to Carol
+    // Transfer 1000 tokens to Carol
     const tx2 = await this.erc20['transfer(address,bytes)'](this.signers.carol.address, encryptedTransferAmount);
     await Promise.all([tx.wait(), tx2.wait()]);
 
