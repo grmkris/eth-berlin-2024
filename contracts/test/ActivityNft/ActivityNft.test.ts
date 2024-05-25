@@ -5,6 +5,7 @@ import { getSigners, initSigners } from "../signers";
 import {expect} from "chai";
 import {isAddress} from "ethers";
 import { ethers } from 'hardhat';
+import {Address} from "node:cluster";
 
 
 describe.only("ActivityNFTFactory", function () {
@@ -115,10 +116,10 @@ describe.only("ActivityNFTFactory", function () {
     console.log(`Approving the blind auction to spend tokens on Bob's and Carol's behalf`);
     const txeBobApprove = await eerc20
       .connect(this.signers.bob)
-      ['approve(address,bytes)'](blindAuctionAddress, bobBidAmount);
+      ['approve(address,bytes)'](blindAuctionAddress, bobBidAmountEnc);
     const txCarolApprove = await eerc20
       .connect(this.signers.carol)
-      ['approve(address,bytes)'](blindAuctionAddress, carolBidAmount);
+      ['approve(address,bytes)'](blindAuctionAddress, carolBidAmountEnc);
     await Promise.all([txeBobApprove.wait(), txCarolApprove.wait()]);
 
 
