@@ -1,11 +1,16 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { initializeApp } from "firebase/app";
+
 
 import { getDatabase, ref, set } from "firebase/database";
+import { start } from "repl";
 
 /*
 Example Auction:
@@ -30,28 +35,58 @@ type iAuction = {
   auctionEndTime: string;
 };
 
+//https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app/
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAgWyENrwhXuxs-HGs48ge0ZK7q2KiHO54",
+  authDomain: "betybed-7aa8d.firebaseapp.com",
+  databaseURL: "https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "betybed-7aa8d",
+  storageBucket: "betybed-7aa8d.appspot.com",
+  messagingSenderId: "514652504524",
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69"
+};
+
+
 
 const CreateAuction = () => {
 
-  const database = getDatabase();
+  const firebaseApp = initializeApp(firebaseConfig);
 
-  const [title, setTitle] = useState();
-  const [description, setDescription] = useState();
-  const [minBid, setMinBid] = useState();
-  const [startTime, setStartTime] = useState(); 
-  const [endTime, setEndTime] = useState(); 
-  const [auctionEndTime, setAuctionEndTime] = useState();
-  const [auctionStartTime, setAuctionStartTime] = useState(); 
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [minBid, setMinBid] = useState('');
+  const [startTime, setStartTime] = useState(''); 
+  const [endTime, setEndTime] = useState(''); 
+  const [auctionEndTime, setAuctionEndTime] = useState('');
+  const [auctionStartTime, setAuctionStartTime] = useState(''); 
 
-  function writeUserData(userId, name, email, imageUrl) {
-    const db = getDatabase();
-    set(ref(db, 'users/' + userId), {
-      username: name,
-      email: email,
-      profile_picture : imageUrl
+  function writeUserData(auctionID: string, title: string, description: string, minBid: string, startTime: string, endTime: string, auctionStartTime: string, auctionEndTime: string) {
+    
+    const db = getDatabase(firebaseApp);
+    // set(ref(db, 'listAuctions/' + auctionID), {
+    //   title: title,
+    //   description: description,
+    //   minBid : minBid,
+    //   startTime: startTime,
+    //   endTime: endTime,
+    //   auctionStartTime: auctionStartTime,
+    //   auctionEndTime: auctionEndTime, 
+    // });
+    set(ref(db, 'listAuctions/auctionId/' + auctionID), {
+      title: "title1",
+      description: "description1",
+      minBid :"minBid1",
+      startTime: "startTime1",
+      endTime: "endTime1",
+      auctionStartTime: "auctionStartTime1",
+      auctionEndTime: "auctionEndTime1", 
     });
   }
-
+  useEffect(() => {
+    writeUserData("Idbjkadhbsjf", title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime);
+  }, [title, description, minBid, startTime, endTime, auctionStartTime, auctionEndTime]); // Add dependencies as needed
+  
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
       <div className="space-y-6">
@@ -109,4 +144,4 @@ const CreateAuction = () => {
   );
 };
 
-export default createAuction;
+export default CreateAuction;

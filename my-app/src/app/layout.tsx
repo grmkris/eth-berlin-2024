@@ -25,7 +25,7 @@ const firebaseConfig = {
   appId: "1:514652504524:web:1cc7d749203fb9faf99d69"
 };
 
-const app = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 
 export const metadata: Metadata = {
