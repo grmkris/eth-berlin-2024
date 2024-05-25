@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { ethers, network } from "hardhat";
+import { network } from "hardhat";
 
+import { deployEncryptedERC20Fixture } from "../fixtures";
 import { getSigners, initSigners } from "../signers";
-import { deployEncryptedERC20Fixture } from "./EncryptedERC20.fixture";
 
 describe("EncryptedERC20", function () {
   before(async function () {
@@ -11,7 +11,9 @@ describe("EncryptedERC20", function () {
   });
 
   beforeEach(async function () {
-    const contract = await deployEncryptedERC20Fixture();
+    const contract = await deployEncryptedERC20Fixture({
+      deployer: this.signers.alice,
+    });
     this.contractAddress = await contract.getAddress();
     this.erc20 = contract;
   });
