@@ -1,5 +1,7 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button} from "@/components/ui/button";
+import Link from "next/link";
+
 
 
 export default function Home() {
@@ -21,7 +23,11 @@ export default function Home() {
       <p className="text-white stick-no-bills-800 mt-0 text-3xl">
       perfect match in crowded cities. 
       </p>
-      <Button  className="mt-[10%] w-content p-4 xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl" variant="outline">DEMO</Button>
+      <Button asChild className="mt-[10%] w-content p-4 xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl" variant="outline">
+        <Link href="/auctionOverview">
+          DEMO
+        </Link>
+      </Button>
 
       <Image
           className="absolute bottom-[0%] left-[0%] object-contain w-2/5 h-auto"
