@@ -1,8 +1,9 @@
 import { ethers } from "hardhat";
 
-import type {BlindAuction, CompliantERC20, EncryptedERC20, ERC20Rules, IdentityRegistry} from "../types";
+import type {BlindAuction, CompliantERC20, EncryptedERC20, ERC20Rules, IdentityRegistry, ActivityNFTFactory} from "../types";
 import { getSigners } from "./signers";
 import {ContractRunner} from "ethers";
+import { sign } from "crypto";
 
 export async function deployEncryptedERC20Fixture(props: {
   deployer: ContractRunner;
@@ -64,4 +65,12 @@ export async function deployIdentityRegistryFixture(): Promise<IdentityRegistry>
   await contract.waitForDeployment();
 
   return contract;
+}
+
+export async function deployActivityNftFactoryFixture(): Promise<ActivityNFTFactory> {
+  const signers = await getSigners();
+  const contractFactory = await ethers.getContractFactory("ActivityNFTFactory");
+  const contract = await contractFactory.connect(signers.alice).deploy();
+  await contract.waitForDeployment();
+  return contract as ActivityNFTFactory;
 }
