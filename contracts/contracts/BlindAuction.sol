@@ -50,7 +50,7 @@ contract BlindAuction is Reencrypt {
     // The fee percentage in basis points (e.g., 100 = 1%).
     euint64 public feePercentageBp;
 
-    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint _feePercentageBp) {
+    constructor(address _beneficiary, EncryptedERC20 _tokenContract, uint biddingTime, bool isStoppable, address _feeRecipient, uint16 _feePercentageBp) {
         beneficiary = _beneficiary;
         tokenContract = _tokenContract;
         endTime = block.timestamp + biddingTime;
@@ -137,9 +137,10 @@ contract BlindAuction is Reencrypt {
         tokenTransferred = true;
 
         // Calculate the fee
-        //TODO: not working here
-        euint64 a = TFHE.mul(highestBid, feePercentageBp);
-        euint64 feeAmount = (highestBid * feePercentageBp) / feePercentageEuint;
+        euint64 bidBasispoints = TFHE.mul(highestBid, feePercentageBp);
+        uint64 basisPointsDivisor = 1000;
+        euint64 feeAmount = TFHE.div(bidBasispoints, basisPointsDivisor);
+
         // Transfer the fee to the feeRecipient
         tokenContract.transfer(feeRecipient, feeAmount);
 
