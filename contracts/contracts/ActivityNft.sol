@@ -25,11 +25,14 @@ contract ActivityNFT is ERC721 {
 contract ActivityNFTFactory {
     event ActivityNFTCreated(address activityNFTAddress, address blindAuctionAddress);
 
-    function createActivityNFT(string memory activityRight, address encryptedERC20Address, uint biddingTime) public returns (address) {
+    function createActivityNFT(string memory activityRight, address encryptedERC20Address, uint biddingTime, address feeRecipient, uint16 feePercentageBp) public returns (address) {
         ActivityNFT activityNFT = new ActivityNFT(address(this), activityRight);
 
-        BlindAuction blindAuction = new BlindAuction(msg.sender, encryptedERC20Address, biddingTime, 
-            true, address(this), 100, address(activityNFT), msg.sender);
+        BlindAuction blindAuction = new BlindAuction(msg.sender, encryptedERC20Address, biddingTime,
+            true, feeRecipient, feePercentageBp, address(activityNFT), msg.sender);
+
+        // transfer activityNFT to the blindAuction contract
+        activityNFT.transferFrom(address(this), address(blindAuction), 1);
 
         emit ActivityNFTCreated(address(activityNFT), address(blindAuction));
         return address(activityNFT);

@@ -1,11 +1,10 @@
 import {ActivityNFT, ActivityNFT__factory, ActivityNFTFactory, BlindAuction, BlindAuction__factory, EncryptedERC20} from "../../types";
-import { deployActivityNftFactoryFixture, deployERC20RulesFixture, deployEncryptedERC20Fixture } from "../fixtures";
+import { deployActivityNftFactoryFixture, deployEncryptedERC20Fixture } from "../fixtures";
 import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
 import {expect} from "chai";
 import {isAddress} from "ethers";
 import { ethers } from 'hardhat';
-import {Address} from "node:cluster";
 
 
 describe.only("ActivityNFTFactory", function () {
@@ -54,7 +53,8 @@ describe.only("ActivityNFTFactory", function () {
       console.log("ActivityNFT created at address: ", activityNFTAddress);
     });
     // Call the createActivityNFT function
-    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000000);
+    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000000,
+      this.signers.dave.address, 100)
     await result.wait()
 
     const filter = activityNFTFactory.filters["ActivityNFTCreated(address,address)"]
@@ -199,5 +199,11 @@ describe.only("ActivityNFTFactory", function () {
       tokenDave.signature,
     );
     console.log(`daveBalanceEnd: `, instance.dave.decrypt(eerc20Address, daveBalanceEnd));
+
+    // check if the carol has the activity right (nft token)
+    const activityRightCarol = await activityNFT.connect(this.signers.carol).ownerOf(1);
+
+    expect(activityRightCarol).to.equal(this.signers.carol.address);
+
   });
 });
