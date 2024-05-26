@@ -18,8 +18,14 @@ import { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 
-import ActivityNFTFactoryABI from "../../../abis/ActivityNFTFactory.json";
+
 import EncryptedERC20ABI from "../../../abis/EncryptedERC20.json";
+import {
+  ActivityNFT__factory,
+  ActivityNFTFactory__factory,
+  BlindAuction__factory,
+  EncryptedERC20__factory
+} from "@/types";
 
 /*
 Example Auction:
@@ -116,19 +122,13 @@ const CreateAuction = () => {
     console.log("Signer: ", signer);
 
     // Connect to the ActivityNFTFactory contract
-    const activityNFTFactory = new ethers.Contract(
-      activityNFTFactoryAddress,
-      ActivityNFTFactoryABI.abi,
-      signer
-    );
-    const eerc20 = new ethers.Contract(
-      eerc20Address,
-      EncryptedERC20ABI.abi,
-      signer
-    );
+    const activityNFTFactory = ActivityNFTFactory__factory.connect(activityNFTFactoryAddress, signer)
+
+    const eerc20 = EncryptedERC20__factory.connect(
+      eerc20Address, signer)
     const eerc20Addi = await eerc20.getAddress();
 
-    console.log("Tryyyy");
+    console.log("Tryyyy", signer.address);
     try {
       /*
     const result = await activityNFTFactory.createActivityNFT(activityRight,
@@ -141,14 +141,26 @@ const CreateAuction = () => {
       // for now, we assume the signer has the required tokens
       const createTx = await activityNFTFactory.createActivityNFT(
         activityRight,
-        eerc20Addi,
-        1000000,
+        eerc20Address,
+        1000,
         signer.address,
         100
       );
       const receipt = await createTx.wait();
       console.log(receipt);
 
+      const filter = activityNFTFactory.filters["ActivityNFTCreated(address,address)"]
+      const events = await activityNFTFactory.queryFilter(filter, -10)
+      const event = events[0]
+
+      const args = event.args;
+      const activityNFTAddress = args[0];
+      const activityNFT = ActivityNFT__factory.connect(activityNFTAddress, signer);
+      const blindAuctionAddress = args[1];
+      const blindAuction = BlindAuction__factory.connect(blindAuctionAddress, signer);
+
+      console.log("ActivityNFT created at address: ", activityNFTAddress);
+      console.log("BlindAuction created at address: ", blindAuctionAddress);
       return receipt; // Return the transaction receipt
     } catch (error) {
       console.error("Failed to create ActivityNFT", error);

@@ -59,7 +59,8 @@ describe.only("ActivityNFTFactory", function () {
       console.log("ActivityNFT created at address: ", activityNFTAddress);
     });
     // Call the createActivityNFT function
-    const result = await activityNFTFactory.createActivityNFT(activityRight, eerc20.getAddress(), 1000,
+    const erc20Addr = await eerc20.getAddress();
+    const result = await activityNFTFactory.createActivityNFT(activityRight, erc20Addr, 1000,
       this.signers.dave.address, 100)
     await result.wait()
 

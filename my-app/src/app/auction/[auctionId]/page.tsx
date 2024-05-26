@@ -160,7 +160,7 @@ export default function auctionDetail({
               <CardTitle>Place a Bid</CardTitle>
             </CardHeader>
             <CardContent>
-              <form className="grid gap-4">
+              <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="bid-amount">Bid Amount</Label>
                   <div className="flex items-center gap-2">
@@ -182,8 +182,10 @@ export default function auctionDetail({
                     specify.
                   </p>
                 </div>
-                <Button size="lg">Place Bid</Button>
-              </form>
+                <Button size="lg" onClick={() => {
+
+                }}>Place Bid</Button>
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -343,7 +345,7 @@ export default function auctionDetail({
           </div>
         </div>
       </div>
-      
+
     </>
   );
 }
