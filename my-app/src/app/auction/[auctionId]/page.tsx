@@ -19,6 +19,9 @@ import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 
+import { onValue } from "firebase/database";
+
+
 type tAuction = {
   auctionID: string;
   title: string;
@@ -55,35 +58,41 @@ const firebaseConfig = {
 };
 
 
-export default function auctionDetail({
+export default function AuctionDetail({
   params,
 }: {
-  params: { auctionId: string };
+  params: { auctionId: tAuction };
 }) {
   //return <div>My Post: {params.auctionId}</div>
   const firebaseApp = initializeApp(firebaseConfig);
+  const [data, setData] = useState<{ [key: string]: any }>({});
 
-  // Write user data to the Firebase
-  const writeUserData = async (_auctionId: tAuction) => {
+  useEffect(() => {
     const db = getDatabase(firebaseApp);
-    set(ref(db, "listAuctions/auctionId/" + _auctionId.auctionID), {
-      title: _auctionId.title,
-      description: _auctionId.description,
-      minBid: _auctionId.minBid,
-      startTime: _auctionId.startTime,
-      endTime: _auctionId.endTime,
-      auctionStartTime: _auctionId.auctionStartTime,
-      auctionEndTime: _auctionId.auctionEndTime,
-    })
-      .then((res) => {
-        console.log("Data saved successfully");
-        console.log(_auctionId);
-      })
-      .catch((error) => {
-        console.log("Data could not be saved." + error);
+  
+    const updateStarCount = (postElement: HTMLElement, data: string): void => {
+      postElement.textContent = data;
+    }
+  
+    const starCountRef = ref(db, 'listAuctions/auctionId/' + params.auctionId.auctionID);
+  
+    const fetchData = () => {
+      onValue(starCountRef, (snapshot) => {
+        const _data = snapshot.val();
+        console.log(_data);
+        setData(_data);
+        console.log(data);
       });
-  };
+    };
+  
+    fetchData(); // Fetch data initially
+  
+    const interval = setInterval(fetchData, 60000); // Fetch data every 1 minute
+  
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
 
+  
   return (
     <>
       <div className="grid lg:grid-cols-[1fr_400px] gap-8 max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -315,98 +324,6 @@ export default function auctionDetail({
           </Card>
         </div>
       </div>
-      <div className="bg-gray-100 dark:bg-gray-800 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 grid gap-8">
-          <div className="grid gap-2">
-            <h2 className="text-2xl font-bold">Related Items</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Check out these other antique pocket watches that may interest
-              you.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Vintage Pocket Watch</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 14k gold case
-                </p>
-                <div className="font-bold text-lg">$950</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Pocket Watch with Chain</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, silver case
-                </p>
-                <div className="font-bold text-lg">$800</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Antique Pocket Watch</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 18k gold case
-                </p>
-                <div className="font-bold text-lg">$1,500</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">
-                  Pocket Watch with Engraving
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 14k gold case
-                </p>
-                <div className="font-bold text-lg">$1,200</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
     </>
   );
 }
