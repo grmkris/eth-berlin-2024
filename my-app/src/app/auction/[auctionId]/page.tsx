@@ -20,6 +20,11 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 
 import { onValue } from "firebase/database";
+import {useMutation} from "wagmi/query";
+import {BlindAuction__factory, EncryptedERC20__factory} from "@/types";
+import {ethers} from "ethers";
+import {useParams} from "next/navigation";
+import {getInstance, getInstanceDynamically} from "@/app/fhevm";
 
 
 type tAuction = {
@@ -58,12 +63,9 @@ const firebaseConfig = {
 };
 
 
-export default function AuctionDetail({
-  params,
-}: {
-  params: { auctionId: tAuction };
-}) {
+export default function AuctionDetail() {
   //return <div>My Post: {params.auctionId}</div>
+  const params = useParams<{ auctionId: string }>()
   const firebaseApp = initializeApp(firebaseConfig);
   const [data, setData] = useState<{ [key: string]: any }>({});
 
@@ -74,7 +76,7 @@ export default function AuctionDetail({
       postElement.textContent = data;
     }
 
-    const starCountRef = ref(db, 'listAuctions/auctionId/' + params.auctionId.auctionID);
+    const starCountRef = ref(db, 'listAuctions/auctionId/' + params.auctionId);
 
     const fetchData = () => {
       onValue(starCountRef, (snapshot) => {
@@ -91,6 +93,73 @@ export default function AuctionDetail({
 
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
+
+  const placeBid = useMutation({
+    onError: (error) => {
+      console.log("error", error)
+    },
+    mutationFn: async (bidAmount: number) => {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      console.log("params.auctionId.auctionID", params.auctionId)
+      // Create a signer
+      const signer = await provider.getSigner();
+      const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
+      const instance = await getInstanceDynamically();
+      console.log("instance", instance)
+      const bobBidAmountEnc = instance.encrypt64(150);
+
+
+      const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
+      const eerc20 = EncryptedERC20__factory.connect(
+          eerc20Address, signer)
+      // approve the blind auction to spend tokens on Bob's behalf
+      const approveTx = await eerc20["approve(address,bytes)"](params.auctionId, bobBidAmountEnc);
+      console.log("approveTx", approveTx);
+      const result = await blindAuction.bid(bobBidAmountEnc, { gasLimit: 5000000 });
+      console.log("result", result);
+
+    }
+  })
+
+
+  const stopAuction = useMutation({
+    onError: (error) => {
+      console.log("error", error)
+    },
+    mutationFn: async () => {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
+      const result = await blindAuction.stop();
+      console.log("result", result);
+    }
+  })
+
+  const claimAuction = useMutation({
+    onError: (error) => {
+      console.log("error", error)
+    },
+    mutationFn: async () => {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
+      const result = await blindAuction.claim();
+      console.log("result", result);
+    }
+  })
+
+  const auctionEnd = useMutation({
+    onError: (error) => {
+      console.log("error", error)
+    },
+    mutationFn: async () => {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
+      const result = await blindAuction.endAuction();
+      console.log("result", result);
+    }
+  })
 
 
   return (
@@ -255,8 +324,21 @@ export default function AuctionDetail({
                   </p>
                 </div>
                 <Button className="text-[#151515]" size="lg" onClick={() => {
-
+                    placeBid.mutate(1250);
                 }}>Place Bid</Button>
+
+                <Button className="text-[#151515]" size="lg" onClick={() => {
+                    stopAuction.mutate();
+                }}>Stop Auction</Button>
+
+                <Button className="text-[#151515]" size="lg" onClick={() => {
+                    claimAuction.mutate();
+                }}>Claim Auction</Button>
+
+                <Button className="text-[#151515]" size="lg" onClick={() => {
+                    auctionEnd.mutate();
+                }}>End Auction</Button>
+
               </div>
             </CardContent>
           </Card>
