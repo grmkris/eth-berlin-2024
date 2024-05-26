@@ -6,4 +6,4 @@ On-chain identity encryption becomes the bedrock for many use-cases. Initially, 
 
 ## Test it!
 
-First, clone the repository: 
+First, clone the repository: ``` https://github.com/grmkris/eth-berlin-2024.git ```
