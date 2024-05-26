@@ -202,9 +202,9 @@ export default function AuctionDetail() {
             </Carousel>
             <div className="grid gap-2">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Antique Pocket Watch</h1>
+                <h1 className="text-2xl font-bold">{data.title}</h1>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Product ID: #12345
+                  Product ID: {data.activityNFTAddress}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -221,53 +221,12 @@ export default function AuctionDetail() {
             <div className="prose max-w-none">
               <h2>Description</h2>
               <p>
-                This exquisite antique pocket watch is a true masterpiece of
-                craftsmanship. Crafted in the late 19th century, it features a
-                beautifully engraved case and a high-quality mechanical movement
-                that keeps time with precision. The watch is in excellent
-                condition, with a well-preserved dial and a smooth-running
-                mechanism.
-              </p>
-              <p>
-                The pocket watch is a testament to the skill and artistry of its
-                makers, and it would make a stunning addition to any collection
-                or a cherished heirloom to be passed down through generations.
-                Dont miss your chance to own this remarkable piece of history.
+                {data.description}
               </p>
             </div>
             <div className="grid gap-4">
               <h2 className="text-lg font-bold">Specifications</h2>
               <div className="grid sm:grid-cols-2 gap-4">
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Brand
-                  </div>
-                  <div>Acme Timepieces</div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Movement
-                  </div>
-                  <div>Mechanical, manual-winding</div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Case Material
-                  </div>
-                  <div>Solid 14k gold</div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Dial
-                  </div>
-                  <div>White enamel, Roman numerals</div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Dimensions
-                  </div>
-                  <div>45mm diameter, 12mm thickness</div>
-                </div>
                 <div className="grid gap-1">
                   <div className="text-sm text-gray-500 dark:text-gray-400">
                     Condition
@@ -283,13 +242,13 @@ export default function AuctionDetail() {
                   <div className="text-sm text-gray-500 dark:text-gray-400">
                     Minimum Bid
                   </div>
-                  <div className="text-2xl font-bold">$44</div>
+                  <div className="text-2xl font-bold">{data.minBid}</div>
                 </div>
                 <div className="grid gap-1">
                   <div className="text-sm text-gray-500 dark:text-gray-400">
                     Auction Ends
                   </div>
-                  <div>June 15, 2025 at 8:00 PM EST</div>
+                  <div>{data.auctionEndTime}</div>
                 </div>
               </div>
             </div>
@@ -356,9 +315,9 @@ export default function AuctionDetail() {
                   <AvatarFallback>JS</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
-                  <div className="font-medium">John Smith</div>
+                  <div className="font-medium">{data.auctionCreator}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Seller since 2015
+                    Seller since 2024
                   </div>
                   <div className="flex items-center gap-2">
                     <StarIcon className="w-4 h-4 fill-primary" />
@@ -371,135 +330,8 @@ export default function AuctionDetail() {
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Shipping & Returns</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Shipping
-                  </div>
-                  <div>
-                    Free shipping to the continental US. International shipping
-                    available for an additional fee.
-                  </div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Returns
-                  </div>
-                  <div>
-                    30-day returns. Item must be in original condition. Buyer is
-                    responsible for return shipping costs.
-                  </div>
-                </div>
-                <div className="grid gap-1">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Payment Methods
-                  </div>
-                  <div>
-                    We accept Visa, Mastercard, American Express, and PayPal.
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
-      <div className="bg-gray-100 dark:bg-gray-800 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 grid gap-8">
-          <div className="grid gap-2">
-            <h2 className="text-2xl font-bold">Related Items</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Check out these other antique pocket watches that may interest
-              you.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Vintage Pocket Watch</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 14k gold case
-                </p>
-                <div className="font-bold text-lg">$950</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Pocket Watch with Chain</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, silver case
-                </p>
-                <div className="font-bold text-lg">$800</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">Antique Pocket Watch</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 18k gold case
-                </p>
-                <div className="font-bold text-lg">$1,500</div>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link className="absolute inset-0 z-10" href="#">
-                <span className="sr-only">View Product</span>
-              </Link>
-              <img
-                alt="Related Product"
-                className="aspect-square object-cover rounded-lg group-hover:opacity-80 transition-opacity"
-                height={300}
-                src="/placeholder.svg"
-                width={300}
-              />
-              <div className="mt-4">
-                <h3 className="font-medium text-lg">
-                  Pocket Watch with Engraving
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Mechanical, 14k gold case
-                </p>
-                <div className="font-bold text-lg">$1,200</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </>
   );
 }
