@@ -80,7 +80,7 @@
     "test": "hardhat test --network zama",
     "test:auction": "hardhat test test/BlindAuction/BlindAuction.test.ts",
     "test:mock": "HARDHAT_NETWORK=hardhat hardhat test --network hardhat",
-    "test:identity": "hardhat test test/identity/*.test.ts",
+    "test:identity": "hardhat test --network zama test/identity/*.test.ts",
     "test:activityNft": "hardhat test --network zama test/ActivityNft/ActivityNft.test.ts",
     "coverage:mock": "HARDHAT_NETWORK=hardhat hardhat coverage-mock --network hardhat",
     "task:getEthereumAddress": "hardhat task:getEthereumAddress",
