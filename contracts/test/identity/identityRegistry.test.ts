@@ -4,8 +4,12 @@ import { ethers } from "hardhat";
 import { deployIdentityRegistryFixture } from "../fixtures";
 import { createInstances } from "../instance";
 import { getSigners, initSigners } from "../signers";
+import { IdentityRegistry } from "../../types";
 
 describe("Identity", function () {
+  let identityRegistry: IdentityRegistry;
+  let identityRegistryAddress: string;
+
   before(async function () {
     await initSigners(3);
     this.signers = await getSigners();
@@ -14,11 +18,15 @@ describe("Identity", function () {
   beforeEach(async function () {
     const contract = await deployIdentityRegistryFixture();
     this.contractAddress = await contract.getAddress();
+    identityRegistry = contract as IdentityRegistry;
+    identityRegistryAddress = await identityRegistry.getAddress();
+
     this.identityRegistry = contract;
     this.instances = await createInstances(this.contractAddress, ethers, this.signers);
   });
 
   it("should add identifier", async function () {
+    console.log(`identityRegistryAddress: `, identityRegistryAddress);
     const addRegistrarTx = await this.identityRegistry.addRegistrar(this.signers.alice, 1);
     await addRegistrarTx.wait();
 

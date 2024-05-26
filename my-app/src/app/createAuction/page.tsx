@@ -43,18 +43,26 @@ type tAuction = {
   endTime: string;
   auctionStartTime: string;
   auctionEndTime: string;
+  auctionCreator: string;
 };
 
 const initialAuction: tAuction = {
-  auctionID: "",
-  title: "",
-  description: "",
-  minBid: "",
-  startTime: "",
-  endTime: "",
-  auctionStartTime: "",
-  auctionEndTime: "",
+  auctionID: '',
+  title: '',
+  description: '',
+  minBid: '',
+  startTime: '',
+  endTime: '',
+  auctionStartTime: '',
+  auctionEndTime: '',
+  auctionCreator: ''
+
 };
+
+const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+const signer = provider.getSigner();
+
+
 
 //https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app/
 // Your web app's Firebase configuration

@@ -133,8 +133,6 @@ const AuctionOverview = () => {
 });
 
 
-
-
   return (
     <>
       <div className="flex justify-between items-start mb-8">
