@@ -111,26 +111,77 @@ const AuctionOverview = () => {
   const [startTime, setStartTime] = useState(''); 
   const [endTime, setEndTime] = useState(''); 
   const [auctionEndTime, setAuctionEndTime] = useState('');
-  const [auctionStartTime, setAuctionStartTime] = useState(''); 
+  const [auctionStartTime, setAuctionStartTime] = useState('');
+  const [data, setData] = useState<{ [key: string]: any }>({});
+  
+  // useEffect(() => {
 
-  const postElement = document.getElementById('someElementId'); // Ensure this ID exists in your HTML
+  // const db = getDatabase(firebaseApp);
 
+  // const updateStarCount = (postElement: HTMLElement, data: string): void => {
+  //   // Assuming postElement is a reference to a DOM element
+  //   // and data is the new content to be displayed
+  //   postElement.textContent = data;
+  // }
 
-  const db = getDatabase(firebaseApp);
+  // const starCountRef = ref(db, 'listAuctions/auctionId/');
+  
+  // onValue(starCountRef, (snapshot) => {
+  // const _data = snapshot.val();
+  // console.log(_data);
+  // setData(_data);
+  // console.log(data);
+  // })}, []);
+  useEffect(() => {
+    const db = getDatabase(firebaseApp);
+  
+    const updateStarCount = (postElement: HTMLElement, data: string): void => {
+      postElement.textContent = data;
+    }
+  
+    const starCountRef = ref(db, 'listAuctions/auctionId/');
+  
+    const fetchData = () => {
+      onValue(starCountRef, (snapshot) => {
+        const _data = snapshot.val();
+        console.log(_data);
+        setData(_data);
+        console.log(data);
+      });
+    };
+  
+    fetchData(); // Fetch data initially
+  
+    const interval = setInterval(fetchData, 60000); // Fetch data every 1 minute
+  
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
 
-  const updateStarCount = (postElement: HTMLElement, data: string): void => {
-    // Assuming postElement is a reference to a DOM element
-    // and data is the new content to be displayed
-    postElement.textContent = data;
-  }
+  // if (postElement) {
+  //   updateStarCount(postElement, _data)};
 
-  const starCountRef = ref(db, 'listAuctions/auctionId/');
-  onValue(starCountRef, (snapshot) => {
-  const data = snapshot.val();
-  console.log(data);
-  if (postElement) {
-    updateStarCount(postElement, data)};
-});
+  //});
+  // useEffect(() => {
+  //   const db = getDatabase();
+  //   const starCountRef = ref(db, 'listAuctions/auctionId/');
+    
+  //   const handleData = (snapshot: { val: () => any; }) => {
+  //     const _data = snapshot.val();
+  //     console.log(_data);
+  //     setData(_data);
+  //   };
+    
+  //   onValue(starCountRef, handleData);
+    
+  //   // // Cleanup function to remove the listener when the component unmounts
+  //   // return () => {
+  //   //  starCountRef.off('value', handleData)
+  //   // };
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(data); // This will log the updated data correctly
+  // }, [data]);
 
 
   return (
@@ -146,16 +197,20 @@ const AuctionOverview = () => {
         </Button>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {cardData.map((card, index) => (
+      {Object.keys(data).map((key) => {
+        const auction = data[key];
+        return (
           <AuctionCard
-            key={index}
-            title={card.title}
-            imgSrc={card.imgSrc}
-            minBid={card.minBid}
-            id={card.id}
-          />
-        ))}
+            key={auction.key}
+            title={auction.title}
+            imgSrc={auction.imgSrc}
+            minBid={auction.minBid}
+            id={auction.id}
+       />
+    );
+  })}
       </div>
+
       <div className="grid grid-cols-3 gap-4">
         <Card className="w-full">
           <CardHeader>
