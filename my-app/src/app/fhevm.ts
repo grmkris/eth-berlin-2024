@@ -22,12 +22,13 @@ export const createFhevmInstance = async () => {
 
 export const getSignature = async (
   contractAddress: string,
-  userAddress: string
+  userAddress: string,
+  instance: FhevmInstance
 ) => {
-  if (getInstance().hasKeypair(contractAddress)) {
-    return getInstance().getPublicKey(contractAddress)!;
+  if (instance.hasKeypair(contractAddress)) {
+    return instance.getPublicKey(contractAddress)!;
   } else {
-    const { publicKey, eip712 } = getInstance().generatePublicKey({
+    const { publicKey, eip712 } = instance.generatePublicKey({
       verifyingContract: contractAddress,
     });
     const params = [userAddress, JSON.stringify(eip712)];
@@ -35,7 +36,7 @@ export const getSignature = async (
       method: "eth_signTypedData_v4",
       params,
     });
-    getInstance().setSignature(contractAddress, signature);
+    instance.setSignature(contractAddress, signature);
     return { signature, publicKey };
   }
 };
@@ -44,7 +45,9 @@ export const getInstance = () => {
   return instance;
 };
 
-export const getInstanceDynamically = async (props?: {
+export const getInstanceDynamically = async (props: {
+  contractAddress: string;
+  signer: Signer;
 }) => {
   await initFhevm();
   const provider = new BrowserProvider((window as any).ethereum);
@@ -53,6 +56,7 @@ export const getInstanceDynamically = async (props?: {
   console.log("chainId", {
     chainId,
   network,
+    provider
   });
   const ret = await provider.call({
     to: FHE_LIB_ADDRESS,
@@ -62,7 +66,16 @@ export const getInstanceDynamically = async (props?: {
   console.log("ret", ret);
   const decoded = AbiCoder.defaultAbiCoder().decode(["bytes"], ret);
   const publicKey = decoded[0];
-  console.log("publicKey", publicKey);
   const dynamicinstance = await createInstance({ chainId, publicKey });
+
+  const address = await props?.signer.getAddress();
+  if (!address) {
+    throw new Error("Signer address not found");
+  }
+  await getSignature(
+    props?.contractAddress,
+      address,
+      dynamicinstance
+    );
   return dynamicinstance;
 }

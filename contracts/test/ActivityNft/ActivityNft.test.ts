@@ -32,7 +32,7 @@ describe.only("ActivityNFTFactory", function () {
         this.instances = instances;
         // Mint with Alice account
         const transaction = await eerc20.mint(10000);
-        transaction.wait();
+        await transaction.wait();
 
         // Transfer 1000 tokens to Bob
         const encryptedTransferAmount = instances.alice.encrypt64(1000);

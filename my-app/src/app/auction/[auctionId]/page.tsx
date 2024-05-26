@@ -20,7 +20,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 
 import { onValue } from "firebase/database";
-import {useMutation} from "wagmi/query";
+import {useMutation, useQuery} from "wagmi/query";
 import {BlindAuction__factory, EncryptedERC20__factory} from "@/types";
 import {ethers} from "ethers";
 import {useParams} from "next/navigation";
@@ -62,6 +62,13 @@ const firebaseConfig = {
   appId: "1:514652504524:web:1cc7d749203fb9faf99d69",
 };
 
+interface BigInt {
+  /** Convert to BigInt to string form in JSON.stringify */
+  toJSON: () => string;
+}
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
 
 export default function AuctionDetail() {
   //return <div>My Post: {params.auctionId}</div>
@@ -104,12 +111,13 @@ export default function AuctionDetail() {
       // Create a signer
       const signer = await provider.getSigner();
       const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
-      const instance = await getInstanceDynamically();
-      console.log("instance", instance)
-      const bobBidAmountEnc = instance.encrypt64(150);
-
-
       const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
+      const instance = await getInstanceDynamically({
+        contractAddress: eerc20Address,
+        signer
+      });
+      console.log("instance", instance)
+      const bobBidAmountEnc = instance.encrypt64(100);
       const eerc20 = EncryptedERC20__factory.connect(
           eerc20Address, signer)
       // approve the blind auction to spend tokens on Bob's behalf
@@ -156,8 +164,31 @@ export default function AuctionDetail() {
       const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
       const blindAuction = BlindAuction__factory.connect(params.auctionId, signer);
-      const result = await blindAuction.endAuction();
+      const result = await blindAuction.auctionEnd();
       console.log("result", result);
+    }
+  })
+
+  const encryptedBalance = useQuery({
+    queryKey: ["encryptedBalance", params.auctionId],
+    queryFn: async () => {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        const signer = await provider.getSigner();
+        const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
+        const instance = await getInstanceDynamically({
+            contractAddress: eerc20Address,
+            signer
+        });
+        const signerAddress = await signer.getAddress();
+        const token = instance.getPublicKey(eerc20Address)!;
+        const balance = await EncryptedERC20__factory.connect(eerc20Address, signer).balanceOf(
+            signerAddress,
+            token.publicKey,
+            token.signature
+        );
+        const balanceDec = await instance.decrypt(eerc20Address, balance);
+        console.log("balanceDec", balanceDec.toString());
+        return balanceDec.toString();
     }
   })
 
@@ -323,6 +354,14 @@ export default function AuctionDetail() {
                     specify.
                   </p>
                 </div>
+                <>
+                Balance of Encrypted Tokens
+                {encryptedBalance.isLoading ? (
+                    <div>Loading...</div>
+                ) : (
+                    <div>{JSON.stringify(encryptedBalance.data)}</div>
+                )}
+                </>
                 <Button className="text-[#151515]" size="lg" onClick={() => {
                     placeBid.mutate(1250);
                 }}>Place Bid</Button>
