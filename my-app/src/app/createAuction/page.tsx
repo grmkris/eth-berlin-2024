@@ -12,6 +12,8 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 
 import { start } from "repl";
+import { ethers } from 'ethers';
+
 
 import useCreateAuctionHook from "../../../hooks/useCreateAuctionHook";
 
@@ -37,6 +39,7 @@ type tAuction = {
   endTime: string;
   auctionStartTime: string;
   auctionEndTime: string;
+  auctionCreator: string;
 };
 
 const initialAuction: tAuction = {
@@ -48,7 +51,14 @@ const initialAuction: tAuction = {
   endTime: '',
   auctionStartTime: '',
   auctionEndTime: '',
+  auctionCreator: ''
+
 };
+
+const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+const signer = provider.getSigner();
+
+
 
 //https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app/
 // Your web app's Firebase configuration
@@ -92,6 +102,7 @@ const CreateAuction = () => {
       endTime: _auction.endTime,
       auctionStartTime: _auction.auctionStartTime,
       auctionEndTime: _auction.auctionEndTime, 
+      auctionCreator: signer,
     }).then((res) => {
       console.log('Data saved successfully')
       console.log(_auction)
