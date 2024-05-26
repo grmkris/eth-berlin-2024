@@ -42,7 +42,7 @@ describe.only("ActivityNFTFactory", function () {
         const tx2 = await eerc20['transfer(address,bytes)'](this.signers.carol.address, encryptedTransferAmount);
 
         // Transfer 1000 tokens to Metamask
-        const tx3 = await eerc20['transfer(address,bytes)']("0x08Ab1Ce3686cb7E616af2D3E068356B160c4c038", encryptedTransferAmount);
+        const tx3 = await eerc20['transfer(address,bytes)']("0x08Ab1Ce3686cb7E616af2D3E068356B160c4c037", encryptedTransferAmount);
         await Promise.all([tx.wait(), tx2.wait(), tx3.wait()]);
     });
 
