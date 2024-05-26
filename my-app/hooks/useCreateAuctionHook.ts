@@ -7,7 +7,6 @@ const activityNFTFactoryAddress = "0xF7eE09CE742962b0c5542C5cbE3aBf76D9e0831c";
 const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
 
 function useCreateAuctionHook(activityRight: string) {
-    const [activityRightState, setActivityRight] = useState<string>("");
     const [log, setLog] = useState<string>("");
 
     // Initialize ethers with a provider (MetaMask in this case)
