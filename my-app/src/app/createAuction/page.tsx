@@ -156,7 +156,7 @@ const CreateAuction = () => {
       const args = event.args;
       const activityNFTAddress = args[0];
       const activityNFT = ActivityNFT__factory.connect(activityNFTAddress, signer);
-      const blindAuctionAddress = args[1];
+      const blindAuctionAddress = args[1]; // primary key !! 🚀
       const blindAuction = BlindAuction__factory.connect(blindAuctionAddress, signer);
 
       console.log("ActivityNFT created at address: ", activityNFTAddress);
