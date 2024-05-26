@@ -171,8 +171,11 @@ const CreateAuction = () => {
       setActivityNFTAddress(activityNFTAddress.toString());
       console.log("BlindAuction created at address: ", blindAuctionAddress);
       setBlindAuctionAddress(blindAuctionAddress.toString());
-    
-      return receipt; // Return the transaction receipt
+
+      return {
+        activityNFTAddress: activityNFTAddress.toString(),
+        blindAuctionAddress: blindAuctionAddress.toString(),
+      }
     } catch (error) {
       console.error("Failed to create ActivityNFT", error);
     }
@@ -208,11 +211,15 @@ const CreateAuction = () => {
         .then((res) => {
           console.log("ActivityNFT created");
           console.log(res);
+          writeUserData({
+            ...newAuction,
+            auctionID: res?.blindAuctionAddress || "",
+            activityNFTAddress: res?.activityNFTAddress || "",
+          });
         })
         .catch((error) => {
           console.log("ActivityNFT could not be created." + error);
       });
-      writeUserData(newAuction);
 
     }
   };
