@@ -6,7 +6,7 @@ import { useState } from 'react';
 const activityNFTFactoryAddress = "0xF7eE09CE742962b0c5542C5cbE3aBf76D9e0831c";
 const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
 
-function CreateAuctionHook(activityRight: string) {
+function useCreateAuctionHook(activityRight: string) {
     const [activityRightState, setActivityRight] = useState<string>("");
     const [log, setLog] = useState<string>("");
 
@@ -31,13 +31,18 @@ function CreateAuctionHook(activityRight: string) {
             // for now, we assume the signer has the required tokens
             const createTx = await activityNFTFactory.createActivityNFT(activityRight, eerc20.address, 1000000, signer, 100);
             const receipt = await createTx.wait();
+            console.log(receipt)
 
             setLog(`ActivityNFT created. Transaction Hash: ${receipt.transactionHash}`);
+            return receipt; // Return the transaction receipt
+
         } catch (error) {
             console.error("Failed to create ActivityNFT", error);
             setLog(`Failed to create ActivityNFT: ${(error as Error).message}`);
         }
+
+
     }
 }
 
-export default CreateAuctionHook;
+export default useCreateAuctionHook;

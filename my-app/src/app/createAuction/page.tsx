@@ -13,7 +13,7 @@ import { getDatabase, ref, set } from "firebase/database";
 
 import { start } from "repl";
 
-import CreateAuctionHook from "../../../hooks/CreateAuctionHook";
+import useCreateAuctionHook from "../../../hooks/useCreateAuctionHook";
 
 /*
 Example Auction:
@@ -72,6 +72,13 @@ const CreateAuction = () => {
   const [auction, setAuction] = useState<tAuction>(initialAuction);
 
   const writeUserData = async (_auction: tAuction) => {
+
+   const receipAuction = await useCreateAuctionHook(JSON.stringify(_auction));
+   
+   if (receipAuction !== undefined) {
+    _auction.auctionID = receipAuction;
+  }   
+
     
     const db = getDatabase(firebaseApp);
     console.log(_auction)
