@@ -1,17 +1,16 @@
-
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavBarComp } from "@/app/NavBarComp";
 import { Providers } from "./providers";
-import { cookieToInitialState } from 'wagmi'
-import { headers } from 'next/headers'
-import { config, projectId} from '../lib/config'
-
+import { cookieToInitialState } from "wagmi";
+import { headers } from "next/headers";
+import { config, projectId } from "../lib/config";
 
 import { initializeApp } from "firebase/app";
-
+import { Connect } from "@/components/zama/Connect";
+import { Devnet } from "@/components/zama/Devnet";
+import { initFhevm } from "fhevmjs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,11 +21,10 @@ const firebaseConfig = {
   projectId: "betybed-7aa8d",
   storageBucket: "betybed-7aa8d.appspot.com",
   messagingSenderId: "514652504524",
-  appId: "1:514652504524:web:1cc7d749203fb9faf99d69"
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69",
 };
 
 initializeApp(firebaseConfig);
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -38,20 +36,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialState = cookieToInitialState(config, headers().get('cookie'))
+  const initialState = cookieToInitialState(config, headers().get("cookie"));
 
   return (
     <>
-        <html lang="en">
-          <body className={inter.className}>
-            <NavBarComp>
-
-                <Providers initialState={initialState}>{children}</Providers>
-
-            </NavBarComp>
-          </body>
-        </html>
-      </>
-
+      <html lang="en">
+        <body className={inter.className}>
+          <NavBarComp>
+            {/*
+              <Connect>{(account, provider) => <Devnet />}</Connect>
+              <Providers initialState={initialState}>{children}</Providers>
+            */}
+            <Providers initialState={initialState}>{children}</Providers>
+          </NavBarComp>
+        </body>
+      </html>
+    </>
   );
 }
