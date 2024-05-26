@@ -42,11 +42,21 @@ describe.only("ActivityNFTFactory", function () {
         const tx2 = await eerc20['transfer(address,bytes)'](this.signers.carol.address, encryptedTransferAmount);
 
         // Transfer 1000 tokens to Metamask
-        const tx3 = await eerc20['transfer(address,bytes)']("0x08Ab1Ce3686cb7E616af2D3E068356B160c4c037", encryptedTransferAmount);
-        await Promise.all([tx.wait(), tx2.wait(), tx3.wait()]);
+        await Promise.all([tx.wait(), tx2.wait()]);
     });
 
-  it.only("should create a new ActivityNFT contract", async function () {
+  it.only("send already existings encrypted tokens to specific wallets", async function () {
+    const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe".toLowerCase();
+    const instances = await createInstances(eerc20Address, ethers, this.signers);
+    const encryptedTransferAmount = instances.alice.encrypt64(200);
+
+    const tx1 = await eerc20['transfer(address,bytes)']("0x0c558b655d388f7041bc4FbfbdF02AE1a605F19B".toLowerCase(), encryptedTransferAmount);
+    const tx2 = await eerc20['transfer(address,bytes)']("0x2448BF5A2aF904a29221D962E2D6f533c305c2BF".toLowerCase(), encryptedTransferAmount);
+    const tx3 = await eerc20['transfer(address,bytes)']("0x84897093EA735105F34a08e67aE720b31D402069".toLowerCase(), encryptedTransferAmount);
+    await Promise.all([tx1.wait(), tx2.wait(), tx3.wait()]);
+  });
+
+  it("should create a new ActivityNFT contract", async function () {
     const activityRight = "Sleep in Fhain for 2 weeks";
     const activityNFTFactoryAddress = await activityNFTFactory.getAddress();
     console.log(`activityNFTFactoryAddress: `, activityNFTFactoryAddress);
