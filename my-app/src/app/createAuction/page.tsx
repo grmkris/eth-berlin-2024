@@ -59,8 +59,7 @@ const initialAuction: tAuction = {
 
 };
 
-const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-const signer = provider.getSigner();
+
 
 
 
@@ -79,6 +78,10 @@ const firebaseConfig = {
 
 // activityRight: Description what the buyer gets
 const createActivityNFT = async (activityRight: string) => {
+
+  const provider = new ethers.providers.Web3Provider((window as any).zama);
+  const signer = provider.getSigner();
+
   const activityNFTFactoryAddress =
     "0xF7eE09CE742962b0c5542C5cbE3aBf76D9e0831c";
   const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
@@ -86,11 +89,11 @@ const createActivityNFT = async (activityRight: string) => {
     alert("Please enter an activity right.");
     return;
   }
-  //const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-  const provider = new ethers.BrowserProvider((window as any).ethereum);
+  //const provider = new ethers.providers.Web3Provider((window as any).zama);
+  //const signer = provider.getSigner();
 
   // Create a signer
-  const signer = await provider.getSigner();
+  //const signer = await provider.getSigner();
   console.log("Signer: ", signer);
 
   // Connect to the ActivityNFTFactory contract
@@ -122,7 +125,7 @@ const createActivityNFT = async (activityRight: string) => {
       activityRight,
       eerc20Addi,
       1000000,
-      signer.address,
+      signer._address,
       100
     );
     const receipt = await createTx.wait();
@@ -135,6 +138,10 @@ const createActivityNFT = async (activityRight: string) => {
 };
 
 const CreateAuction = () => {
+
+//  const provider = new ethers.providers.Web3Provider((window as any).zama);
+//  const signer = provider.getSigner();
+
   const firebaseApp = initializeApp(firebaseConfig);
   const [auction, setAuction] = useState<tAuction>(initialAuction);
 
@@ -160,6 +167,10 @@ const CreateAuction = () => {
   };
 
   const handleFormSubmit = (event: React.FormEvent) => {
+
+     const provider = new ethers.providers.Web3Provider((window as any).zama);
+     const signer = provider.getSigner();
+
     event.preventDefault();
     console.log("Form submitted");
     const newAuction: tAuction = {
@@ -171,7 +182,7 @@ const CreateAuction = () => {
       endTime: auction.endTime,
       auctionStartTime: auction.auctionStartTime,
       auctionEndTime: auction.auctionEndTime,
-      auctionCreator: signer.address,
+      auctionCreator: signer._address,
     };
     console.log("New Auction");
     console.log(newAuction);
