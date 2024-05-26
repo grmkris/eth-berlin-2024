@@ -133,9 +133,8 @@ const AuctionOverview = () => {
           <AuctionCard
             key={auction.key}
             title={auction.title}
-            //imgSrc={auction.imgSrc}
             minBid={auction.minBid}
-            id={auction.id}
+            id={key.toString()}
             description={auction.description}
             startTime={auction.startTime}
             endTime={auction.endTime}

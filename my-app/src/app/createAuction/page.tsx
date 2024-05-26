@@ -26,6 +26,7 @@ import {
   BlindAuction__factory,
   EncryptedERC20__factory
 } from "@/types";
+import { Address } from "cluster";
 
 /*
 Example Auction:
@@ -50,10 +51,11 @@ type tAuction = {
   auctionStartTime: string;
   auctionEndTime: string;
   auctionCreator: string;
+  activityNFTAddress:string;
 };
 
 const initialAuction: tAuction = {
-  auctionID: "",
+  auctionID: '0x0000000000000000000000000000000000000000',
   title: "",
   description: "",
   minBid: "",
@@ -61,7 +63,8 @@ const initialAuction: tAuction = {
   endTime: "",
   auctionStartTime: "",
   auctionEndTime: "",
-  auctionCreator: "",
+  auctionCreator: '0x0000000000000000000000000000000000000000',
+  activityNFTAddress:'0x0000000000000000000000000000000000000000',
 };
 
 //const provider = new ethers.providers.Web3Provider((window as any).ethereum);
@@ -83,6 +86,9 @@ const firebaseConfig = {
 const CreateAuction = () => {
   const firebaseApp = initializeApp(firebaseConfig);
   const [auction, setAuction] = useState<tAuction>(initialAuction);
+  const [activityNFTAddress, setActivityNFTAddress] = useState<string>()
+  const [blindAuctionAddress, setBlindAuctionAddress] = useState<string>()
+
 
   // Write user data to the Firebase
   const writeUserData = async (_auction: tAuction) => {
@@ -95,6 +101,8 @@ const CreateAuction = () => {
       endTime: _auction.endTime,
       auctionStartTime: _auction.auctionStartTime,
       auctionEndTime: _auction.auctionEndTime,
+      activityNFTAddress: _auction.activityNFTAddress,
+      auctionCreator: _auction.auctionCreator,
     })
       .then((res) => {
         console.log("Data saved successfully");
@@ -160,7 +168,10 @@ const CreateAuction = () => {
       const blindAuction = BlindAuction__factory.connect(blindAuctionAddress, signer);
 
       console.log("ActivityNFT created at address: ", activityNFTAddress);
+      setActivityNFTAddress(activityNFTAddress.toString());
       console.log("BlindAuction created at address: ", blindAuctionAddress);
+      setBlindAuctionAddress(blindAuctionAddress.toString());
+    
       return receipt; // Return the transaction receipt
     } catch (error) {
       console.error("Failed to create ActivityNFT", error);
@@ -176,7 +187,7 @@ const CreateAuction = () => {
     const signerAddress = await signer.getAddress();
     console.log("Form submitted");
     const newAuction: tAuction = {
-      auctionID: auction.title + Math.random().toString(36).substring(7),
+      auctionID: blindAuctionAddress,
       title: auction.title,
       description: auction.description,
       minBid: auction.minBid,
@@ -185,6 +196,7 @@ const CreateAuction = () => {
       auctionStartTime: auction.auctionStartTime,
       auctionEndTime: auction.auctionEndTime,
       auctionCreator: signerAddress,
+      activityNFTAddress: activityNFTAddress,
     };
     console.log("New Auction");
     console.log(newAuction);
@@ -192,7 +204,6 @@ const CreateAuction = () => {
       setAuction({
         ...auction,
       });
-      //writeUserData(newAuction);
       createActivityNFT(newAuction.title)
         .then((res) => {
           console.log("ActivityNFT created");
@@ -200,7 +211,9 @@ const CreateAuction = () => {
         })
         .catch((error) => {
           console.log("ActivityNFT could not be created." + error);
-        });
+      });
+      writeUserData(newAuction);
+
     }
   };
   return (
@@ -235,13 +248,14 @@ const CreateAuction = () => {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="description">Description</Label>
-                  <Textarea
+                  <Input
                     id="description"
                     placeholder="Describe your item"
+                    type="text"
                     onChange={(e) => {
                       setAuction({
                         ...auction,
-                        description: "Wer braucht beschreibung amk??",
+                        description: e.target.value,
                       });
                     }}
                   />
