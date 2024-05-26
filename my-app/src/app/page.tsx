@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-
 
 export default function Home() {
   return (
@@ -18,33 +16,35 @@ export default function Home() {
         />
       </div>
       <p className="text-white stick-no-bills-800 mt-20 text-3xl">
-        Blind auctions to find your 
+        Blind auctions to find your
       </p>
       <p className="text-white stick-no-bills-800 mt-0 text-3xl">
-      perfect match in crowded cities. 
+        perfect match in crowded cities.
       </p>
-      <Button asChild className="mt-[10%] w-content p-4 xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl" variant="outline">
-        <Link href="/auctionOverview">
-          DEMO
-        </Link>
+      <Button
+        asChild
+        className="mt-[10%] w-content p-4 xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl"
+        variant="outline"
+      >
+        <Link href="/auctionOverview">DEMO</Link>
       </Button>
 
       <Image
-          className="absolute bottom-[0%] left-[0%] object-contain w-2/5 h-auto"
-          src="/goat-logo.png"
-          alt="Bet&Bed logo"
-          width={630}
-          height={130}
-          priority
-      />  
-       <Image
-          className="absolute bottom-[0%] right-[0%] object-contain w-[32%] h-auto"
-          src="/face1.png"
-          alt="Bet&Bed logo face"
-          width={630}
-          height={130}
-          priority
-      />  
+        className="absolute bottom-[0%] left-[0%] object-contain w-2/5 h-auto"
+        src="/goat-logo.png"
+        alt="Bet&Bed logo"
+        width={630}
+        height={130}
+        priority
+      />
+      <Image
+        className="absolute bottom-[0%] right-[0%] object-contain w-[32%] h-auto"
+        src="/face1.png"
+        alt="Bet&Bed logo face"
+        width={630}
+        height={130}
+        priority
+      />
     </main>
   );
 }
