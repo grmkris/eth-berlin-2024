@@ -14,13 +14,85 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function auctionDetail({
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set } from "firebase/database";
+
+import { onValue } from "firebase/database";
+
+
+type tAuction = {
+  auctionID: string;
+  title: string;
+  description: string;
+  minBid: string;
+  startTime: string;
+  endTime: string;
+  auctionStartTime: string;
+  auctionEndTime: string;
+  auctionCreator: string;
+};
+
+const initialAuction: tAuction = {
+  auctionID: "",
+  title: "",
+  description: "",
+  minBid: "",
+  startTime: "",
+  endTime: "",
+  auctionStartTime: "",
+  auctionEndTime: "",
+  auctionCreator: "",
+};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAgWyENrwhXuxs-HGs48ge0ZK7q2KiHO54",
+  authDomain: "betybed-7aa8d.firebaseapp.com",
+  databaseURL:
+    "https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "betybed-7aa8d",
+  storageBucket: "betybed-7aa8d.appspot.com",
+  messagingSenderId: "514652504524",
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69",
+};
+
+
+export default function AuctionDetail({
   params,
 }: {
-  params: { auctionId: string };
+  params: { auctionId: tAuction };
 }) {
   //return <div>My Post: {params.auctionId}</div>
+  const firebaseApp = initializeApp(firebaseConfig);
+  const [data, setData] = useState<{ [key: string]: any }>({});
+
+  useEffect(() => {
+    const db = getDatabase(firebaseApp);
+
+    const updateStarCount = (postElement: HTMLElement, data: string): void => {
+      postElement.textContent = data;
+    }
+
+    const starCountRef = ref(db, 'listAuctions/auctionId/' + params.auctionId.auctionID);
+
+    const fetchData = () => {
+      onValue(starCountRef, (snapshot) => {
+        const _data = snapshot.val();
+        console.log(_data);
+        setData(_data);
+        console.log(data);
+      });
+    };
+
+    fetchData(); // Fetch data initially
+
+    const interval = setInterval(fetchData, 60000); // Fetch data every 1 minute
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
+
+
   return (
     <>
       <div className="grid lg:grid-cols-[1fr_400px] gap-8 max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -33,7 +105,7 @@ export default function auctionDetail({
                     alt="Product Image"
                     className="aspect-[4/3] object-cover w-full"
                     height={600}
-                    src="/placeholder.svg"
+                    src="/bed1.png"
                     width={800}
                   />
                 </CarouselItem>
@@ -182,7 +254,7 @@ export default function auctionDetail({
                     specify.
                   </p>
                 </div>
-                <Button size="lg" onClick={() => {
+                <Button className="text-[#151515]" size="lg" onClick={() => {
 
                 }}>Place Bid</Button>
               </div>

@@ -25,6 +25,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.3",
     "ethers": "^6.12.1",
+    "fhevm": "^0.4.0",
     "fhevmjs": "^0.4.0",
     "firebase": "^10.12.1",
     "lucide-react": "^0.379.0",

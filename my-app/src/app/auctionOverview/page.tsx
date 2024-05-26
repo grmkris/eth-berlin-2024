@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -15,66 +16,36 @@ import { getDatabase, ref, set } from "firebase/database";
 import { useState, useEffect} from "react";
 import { onValue } from "firebase/database";
 
-const cardData = [
-  {
-    title: "1 Shared Bed",
-    imgSrc: "/bed1.png",
-    minBid: "$500",
-    id: "abcd1234",
-  },
-  {
-    title: "2 Single bed",
-    imgSrc: "/bed1.png",
-    minBid: "$1,200",
-    id: "xiuas3412",
-  },
-  {
-    title: "1 Bed",
-    imgSrc: "/bed1.png",
-    minBid: "$800",
-    id: "5233",
-  },
-  {
-    title: "2 Bed reversed",
-    imgSrc: "/bed1.png",
-    minBid: "$500",
-    id: "qwer09238",
-  },
-  {
-    title: "-1 Bed",
-    imgSrc: "/bed1.png",
-    minBid: "$1,200",
-    id: "qwefr09238",
-  },
-  {
-    title: "Stacked non bunk bed",
-    imgSrc: "/bed1.png",
-    minBid: "$800",
-    id: "32sr09238",
-  },
-];
 
 const AuctionCard = ({
   title,
-  imgSrc,
+  description,
+  startTime,
+  endTime,
   minBid,
+  auctionEndTime,
   id
 }: {
   title: string;
-  imgSrc: string;
+  description: string,
+  startTime: string,
+  endTime: string,
   minBid: string;
+  auctionEndTime: string,
   id: string;
 }) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle>{title}</CardTitle>
+      <p>Available from {startTime} to the {endTime}</p>
     </CardHeader>
-    <CardContent>
+    <CardContent className="flex flex-col justify-between">
+      <p>{description}</p>
       <img
-        alt={title}
+        alt="Bed image"
         className="w-full h-auto"
         height="200"
-        src={imgSrc}
+        src="/bed1.png"
         style={{
           aspectRatio: "200/200",
           objectFit: "cover",
@@ -82,8 +53,11 @@ const AuctionCard = ({
         width="200"
       />
     </CardContent>
-    <CardFooter className="flex justify-between">
-      <span className="font-semibold">Min. bid: {minBid}</span>
+    <CardFooter className="flex flex-col justify-between">
+      <div>
+        <span className="font-semibold">Min. bid: {minBid}</span>
+        <span className="font-semibold">Auction ends: {auctionEndTime}</span>
+      </div>
       <Button variant="outline">
         <Link href={`/auction/${id}`}>View</Link>
       </Button>
@@ -113,25 +87,7 @@ const AuctionOverview = () => {
   const [auctionEndTime, setAuctionEndTime] = useState('');
   const [auctionStartTime, setAuctionStartTime] = useState('');
   const [data, setData] = useState<{ [key: string]: any }>({});
-  
-  // useEffect(() => {
-
-  // const db = getDatabase(firebaseApp);
-
-  // const updateStarCount = (postElement: HTMLElement, data: string): void => {
-  //   // Assuming postElement is a reference to a DOM element
-  //   // and data is the new content to be displayed
-  //   postElement.textContent = data;
-  // }
-
-  // const starCountRef = ref(db, 'listAuctions/auctionId/');
-  
-  // onValue(starCountRef, (snapshot) => {
-  // const _data = snapshot.val();
-  // console.log(_data);
-  // setData(_data);
-  // console.log(data);
-  // })}, []);
+ 
   useEffect(() => {
     const db = getDatabase(firebaseApp);
   
@@ -157,194 +113,38 @@ const AuctionOverview = () => {
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
 
-  // if (postElement) {
-  //   updateStarCount(postElement, _data)};
-
-  //});
-  // useEffect(() => {
-  //   const db = getDatabase();
-  //   const starCountRef = ref(db, 'listAuctions/auctionId/');
-    
-  //   const handleData = (snapshot: { val: () => any; }) => {
-  //     const _data = snapshot.val();
-  //     console.log(_data);
-  //     setData(_data);
-  //   };
-    
-  //   onValue(starCountRef, handleData);
-    
-  //   // // Cleanup function to remove the listener when the component unmounts
-  //   // return () => {
-  //   //  starCountRef.off('value', handleData)
-  //   // };
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(data); // This will log the updated data correctly
-  // }, [data]);
-
 
   return (
     <>
       <div className="flex justify-between items-start mb-8">
-        <h1 className="text-2xl font-bold">Auction Offers Overview</h1>
+        <h1 className="text-2xl font-bold stick-no-bills-800 ">Auction Offers Overview</h1>
         <Button
           asChild
-          className="mt-[10%] w-content p-4 xs:text-l sm:text-l md:text-xl lg:text-3xl"
+          className="w-content p-4 xs:text-l sm:text-l md:text-xl lg:text-3xl"
           variant="outline"
         >
-          <Link href="/createAuction">Create Auction</Link>
+        <Link className="stick-no-bills-400" href="/createAuction">Create Auction</Link>
         </Button>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 stick-no-bills-600">
       {Object.keys(data).map((key) => {
         const auction = data[key];
         return (
           <AuctionCard
             key={auction.key}
             title={auction.title}
-            imgSrc={auction.imgSrc}
+            //imgSrc={auction.imgSrc}
             minBid={auction.minBid}
             id={auction.id}
-       />
-    );
-  })}
+            description={auction.description}
+            startTime={auction.startTime}
+            endTime={auction.endTime}
+            auctionEndTime={auction.auctionEndTime}
+          />
+        );
+      })}
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Antique Vase</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Antique Vase"
-              className="w-full h-auto"
-              height="200"
-              src="/bed1.png"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $500</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Rare Painting</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Rare Painting"
-              className="w-full h-auto"
-              height="200"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $1,200</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Vintage Watch</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Vintage Watch"
-              className="w-full h-auto"
-              height="200"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $800</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Antique Vase</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Antique Vase"
-              className="w-full h-auto"
-              height="200"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $500</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Rare Painting</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Rare Painting"
-              className="w-full h-auto"
-              height="200"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $1,200</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Vintage Watch</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <img
-              alt="Vintage Watch"
-              className="w-full h-auto"
-              height="200"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/200",
-                objectFit: "cover",
-              }}
-              width="200"
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <span className="font-semibold">Min. bid: $800</span>
-            <Button variant="outline">View</Button>
-          </CardFooter>
-        </Card>
-      </div>
     </>
   );
 };
