@@ -306,7 +306,7 @@ const CreateAuction = () => {
                     }}
                   />
                 </div>
-                <Button size="lg">Create Listing</Button>
+                <Button className="text-[#151515]" size="lg">Create Listing</Button>
               </form>
             </CardContent>
           </Card>

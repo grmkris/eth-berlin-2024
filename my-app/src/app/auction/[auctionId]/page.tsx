@@ -14,6 +14,46 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set } from "firebase/database";
+
+type tAuction = {
+  auctionID: string;
+  title: string;
+  description: string;
+  minBid: string;
+  startTime: string;
+  endTime: string;
+  auctionStartTime: string;
+  auctionEndTime: string;
+  auctionCreator: string;
+};
+
+const initialAuction: tAuction = {
+  auctionID: "",
+  title: "",
+  description: "",
+  minBid: "",
+  startTime: "",
+  endTime: "",
+  auctionStartTime: "",
+  auctionEndTime: "",
+  auctionCreator: "",
+};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAgWyENrwhXuxs-HGs48ge0ZK7q2KiHO54",
+  authDomain: "betybed-7aa8d.firebaseapp.com",
+  databaseURL:
+    "https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "betybed-7aa8d",
+  storageBucket: "betybed-7aa8d.appspot.com",
+  messagingSenderId: "514652504524",
+  appId: "1:514652504524:web:1cc7d749203fb9faf99d69",
+};
+
 
 export default function auctionDetail({
   params,
@@ -21,6 +61,29 @@ export default function auctionDetail({
   params: { auctionId: string };
 }) {
   //return <div>My Post: {params.auctionId}</div>
+  const firebaseApp = initializeApp(firebaseConfig);
+
+  // Write user data to the Firebase
+  const writeUserData = async (_auctionId: tAuction) => {
+    const db = getDatabase(firebaseApp);
+    set(ref(db, "listAuctions/auctionId/" + _auctionId.auctionID), {
+      title: _auctionId.title,
+      description: _auctionId.description,
+      minBid: _auctionId.minBid,
+      startTime: _auctionId.startTime,
+      endTime: _auctionId.endTime,
+      auctionStartTime: _auctionId.auctionStartTime,
+      auctionEndTime: _auctionId.auctionEndTime,
+    })
+      .then((res) => {
+        console.log("Data saved successfully");
+        console.log(_auctionId);
+      })
+      .catch((error) => {
+        console.log("Data could not be saved." + error);
+      });
+  };
+
   return (
     <>
       <div className="grid lg:grid-cols-[1fr_400px] gap-8 max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -33,7 +96,7 @@ export default function auctionDetail({
                     alt="Product Image"
                     className="aspect-[4/3] object-cover w-full"
                     height={600}
-                    src="/placeholder.svg"
+                    src="/bed1.png"
                     width={800}
                   />
                 </CarouselItem>
@@ -182,7 +245,7 @@ export default function auctionDetail({
                     specify.
                   </p>
                 </div>
-                <Button size="lg">Place Bid</Button>
+                <Button className="text-[#151515]" size="lg">Place Bid</Button>
               </form>
             </CardContent>
           </Card>

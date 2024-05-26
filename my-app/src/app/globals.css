@@ -90,7 +90,6 @@
       font-optical-sizing: auto;
       font-weight: 400;
       font-style: normal;
-      color: black;
     }
     .stick-no-bills-600 {
       font-family: "Stick No Bills", sans-serif;
@@ -102,7 +101,7 @@
       font-family: "Stick No Bills", sans-serif;
       font-optical-sizing: auto;
       font-weight: 800;
-      font-style: normal;
+      font-style: bold;
     } 
   }
 
