@@ -171,6 +171,7 @@ const CreateAuction = () => {
       endTime: auction.endTime,
       auctionStartTime: auction.auctionStartTime,
       auctionEndTime: auction.auctionEndTime,
+      auctionCreator: signer.address,
     };
     console.log("New Auction");
     console.log(newAuction);
