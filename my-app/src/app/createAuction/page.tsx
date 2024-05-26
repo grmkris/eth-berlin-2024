@@ -47,22 +47,19 @@ type tAuction = {
 };
 
 const initialAuction: tAuction = {
-  auctionID: '',
-  title: '',
-  description: '',
-  minBid: '',
-  startTime: '',
-  endTime: '',
-  auctionStartTime: '',
-  auctionEndTime: '',
-  auctionCreator: ''
-
+  auctionID: "",
+  title: "",
+  description: "",
+  minBid: "",
+  startTime: "",
+  endTime: "",
+  auctionStartTime: "",
+  auctionEndTime: "",
+  auctionCreator: "",
 };
 
-const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-const signer = provider.getSigner();
-
-
+//const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+//const signer = provider.getSigner();
 
 //https://betybed-7aa8d-default-rtdb.europe-west1.firebasedatabase.app/
 // Your web app's Firebase configuration
@@ -75,63 +72,6 @@ const firebaseConfig = {
   storageBucket: "betybed-7aa8d.appspot.com",
   messagingSenderId: "514652504524",
   appId: "1:514652504524:web:1cc7d749203fb9faf99d69",
-};
-
-// activityRight: Description what the buyer gets
-const createActivityNFT = async (activityRight: string) => {
-  const activityNFTFactoryAddress =
-    "0xF7eE09CE742962b0c5542C5cbE3aBf76D9e0831c";
-  const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
-  if (!activityRight) {
-    alert("Please enter an activity right.");
-    return;
-  }
-  //const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-  const provider = new ethers.BrowserProvider((window as any).ethereum);
-
-  // Create a signer
-  const signer = await provider.getSigner();
-  console.log("Signer: ", signer);
-
-  // Connect to the ActivityNFTFactory contract
-  const activityNFTFactory = new ethers.Contract(
-    activityNFTFactoryAddress,
-    ActivityNFTFactoryABI.abi,
-    signer
-  );
-  const eerc20 = new ethers.Contract(
-    eerc20Address,
-    EncryptedERC20ABI.abi,
-    signer
-  );
-  const eerc20Addi = await eerc20.getAddress();
-
-
-  console.log("Tryyyy")
-  try {
-    /*
-    const result = await activityNFTFactory.createActivityNFT(activityRight,
-       eerc20.getAddress(),
-        1000,
-      this.signers.dave.address,
-       100)
-    */
-    // Replace this with your token minting logic if necessary,
-    // for now, we assume the signer has the required tokens
-    const createTx = await activityNFTFactory.createActivityNFT(
-      activityRight,
-      eerc20Addi,
-      1000000,
-      signer.address,
-      100
-    );
-    const receipt = await createTx.wait();
-    console.log(receipt);
-
-    return receipt; // Return the transaction receipt
-  } catch (error) {
-    console.error("Failed to create ActivityNFT", error);
-  }
 };
 
 const CreateAuction = () => {
@@ -159,8 +99,69 @@ const CreateAuction = () => {
       });
   };
 
-  const handleFormSubmit = (event: React.FormEvent) => {
+  // activityRight: Description what the buyer gets
+  const createActivityNFT = async (activityRight: string) => {
+    const activityNFTFactoryAddress =
+      "0xF7eE09CE742962b0c5542C5cbE3aBf76D9e0831c";
+    const eerc20Address = "0xaA19c1C539B6bc0D491Ee02E8A55eF2E486CebAe";
+    if (!activityRight) {
+      alert("Please enter an activity right.");
+      return;
+    }
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+    // Create a signer
+    const signer = await provider.getSigner();
+    //const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+    console.log("Signer: ", signer);
+
+    // Connect to the ActivityNFTFactory contract
+    const activityNFTFactory = new ethers.Contract(
+      activityNFTFactoryAddress,
+      ActivityNFTFactoryABI.abi,
+      signer
+    );
+    const eerc20 = new ethers.Contract(
+      eerc20Address,
+      EncryptedERC20ABI.abi,
+      signer
+    );
+    const eerc20Addi = await eerc20.getAddress();
+
+    console.log("Tryyyy");
+    try {
+      /*
+    const result = await activityNFTFactory.createActivityNFT(activityRight,
+       eerc20.getAddress(),
+        1000,
+      this.signers.dave.address,
+       100)
+    */
+      // Replace this with your token minting logic if necessary,
+      // for now, we assume the signer has the required tokens
+      const createTx = await activityNFTFactory.createActivityNFT(
+        activityRight,
+        eerc20Addi,
+        1000000,
+        signer.address,
+        100
+      );
+      const receipt = await createTx.wait();
+      console.log(receipt);
+
+      return receipt; // Return the transaction receipt
+    } catch (error) {
+      console.error("Failed to create ActivityNFT", error);
+    }
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+    // Create a signer
+    const signer = await provider.getSigner();
+    const signerAddress = await signer.getAddress();
     console.log("Form submitted");
     const newAuction: tAuction = {
       auctionID: auction.title + Math.random().toString(36).substring(7),
@@ -171,7 +172,7 @@ const CreateAuction = () => {
       endTime: auction.endTime,
       auctionStartTime: auction.auctionStartTime,
       auctionEndTime: auction.auctionEndTime,
-      auctionCreator: signer.address,
+      auctionCreator: signerAddress,
     };
     console.log("New Auction");
     console.log(newAuction);
